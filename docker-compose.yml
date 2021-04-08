@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  php:
+    container_name: sns_php
+    image: php:7.4-apache
+    build:
+      context: ./docker/php
+    volumes:
+      - ./php.ini:/usr/local/etc/php/php.ini
+      - ./html:/var/www/html
+    ports:
+      - 8080:80
+  db:
+    container_name: sns_mysql
+    image: mysql:latest
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=SNS
+      - MYSQL_USER=usr
+      - MYSQL_PASSWORD=password
+      - TZ=Asia/Tokyo
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  phpmyadmin:
+    container_name: sns_pmadm
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+      - PMA_USER=usr
+      - PMA_PASSWORD=password
+    links:
+      - db
+    ports:
+      - 4040:80
+    volumes:
+      - ./docker/phpmyadmin/sessions:/sessions
