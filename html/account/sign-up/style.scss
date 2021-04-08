@@ -1,0 +1,94 @@
+body {
+  color: #fff;
+  background: #c0392b;
+}
+
+.form-control {
+  min-height: 41px;
+  background: #f2f2f2;
+  box-shadow: none !important;
+  border: transparent;
+  padding: 0 40px 0 20px;
+
+  &:focus {
+    background: #e2e2e2;
+  }
+
+  border-radius: 2px;
+}
+
+.btn {
+  border-radius: 2px;
+}
+.input-wrap {
+  position: relative;
+  .toggle-pass {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+  }
+}
+.input-wrap-pass-confirmation {
+  position: relative;
+  .toggle-pass-confirmation {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+}
+.login-form {
+  width: 450px;
+  margin: 200px auto;
+  text-align: center;
+
+  h2 {
+    margin: 10px 0 25px;
+  }
+
+  form {
+    color: #7a7a7a;
+    border-radius: 3px;
+    margin-bottom: 15px;
+    background: #fff;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+  }
+
+  .btn {
+    font-size: 16px;
+    font-weight: bold;
+    background: #3598dc;
+    border: none;
+    outline: none !important;
+
+    &:hover,
+    &:focus {
+      background: #2389cd;
+    }
+  }
+
+  a {
+    color: #fff;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  form a {
+    color: #7a7a7a;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.errmsg {
+  color: #c0392b;
+}
