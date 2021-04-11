@@ -3,20 +3,6 @@ body {
   background: #2980b9;
 }
 
-.form-control {
-  min-height: 41px;
-  background: #f2f2f2;
-  -webkit-box-shadow: none !important;
-          box-shadow: none !important;
-  border: transparent;
-  padding: 0 40px 0 20px;
-  border-radius: 2px;
-}
-
-.form-control:focus {
-  background: #e2e2e2;
-}
-
 .btn {
   border-radius: 2px;
 }
@@ -81,4 +67,18 @@ body {
 
 .login-form form a:hover {
   text-decoration: underline;
+}
+
+.login-form .form-control {
+  min-height: 41px;
+  background: #f2f2f2;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
+  border: transparent;
+  padding: 0 40px 0 20px;
+  border-radius: 2px;
+}
+
+.login-form .form-control:focus {
+  background: #e2e2e2;
 }

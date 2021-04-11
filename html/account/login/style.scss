@@ -3,20 +3,6 @@ body {
   background: #2980b9;
 }
 
-.form-control {
-  min-height: 41px;
-  background: #f2f2f2;
-  box-shadow: none !important;
-  border: transparent;
-  padding: 0 40px 0 20px;
-
-  &:focus {
-    background: #e2e2e2;
-  }
-
-  border-radius: 2px;
-}
-
 .btn {
   border-radius: 2px;
 }
@@ -78,5 +64,19 @@ body {
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  .form-control {
+    min-height: 41px;
+    background: #f2f2f2;
+    box-shadow: none !important;
+    border: transparent;
+    padding: 0 40px 0 20px;
+
+    &:focus {
+      background: #e2e2e2;
+    }
+
+    border-radius: 2px;
   }
 }

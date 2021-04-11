@@ -5,7 +5,7 @@ $db = getDb();
 if (isset($_SESSION['username'])) {
     $username = $_SESSION['username'];
     // bindParamを利用したSQL文の実行
-    $sql = 'SELECT * FROM USR WHERE userid = :id;';
+    $sql = 'SELECT * FROM USERS WHERE userid = :id;';
     $sth = $db->prepare($sql);
     $sth->bindParam(':id', $username);
     $sth->execute();
