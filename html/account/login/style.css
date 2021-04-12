@@ -3,10 +3,6 @@ body {
   background: #2980b9;
 }
 
-.btn {
-  border-radius: 2px;
-}
-
 .input-wrap {
   position: relative;
 }
@@ -40,15 +36,30 @@ body {
 }
 
 .login-form .btn {
+  border-radius: 2px;
   font-size: 16px;
   font-weight: bold;
   background: #e74c3c;
   border: none;
   outline: none !important;
+  margin: 0 10px;
+  width: 150px;
 }
 
 .login-form .btn:hover, .login-form .btn:focus {
   background: #c0392b;
+}
+
+.login-form #guestLoginBtn {
+  font-size: 16px;
+  font-weight: bold;
+  background: #81ecec;
+  border: none;
+  outline: none !important;
+}
+
+.login-form #guestLoginBtn:hover, .login-form #guestLoginBtn:focus {
+  background: #00cec9;
 }
 
 .login-form a {

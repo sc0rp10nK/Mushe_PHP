@@ -51,3 +51,7 @@ body {
 .post_container .form-control:focus {
   background: #e2e2e2;
 }
+
+.text-primary a:hover {
+  text-decoration: none;
+}

@@ -25,10 +25,12 @@ if (isset($_SESSION['username'])) {
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="/">Mushe</a>
-      <?php if (isset($_SESSION['username'])): ?>
+      <?php if (isset($_SESSION['username']) && $_SESSION['username'] != "GUEST"): ?>
       <div>
       <span class="text-primary"><?echo $user['name']?> / <a href="/account/logout">ログアウト</a></span>
       </div>
+      <?php elseif ($_SESSION['username'] === "GUEST"):?>
+        <span class="text-primary"><a href="/account/login">ログイン</a></span>
       <?php endif; ?>
     </div>
   </nav>

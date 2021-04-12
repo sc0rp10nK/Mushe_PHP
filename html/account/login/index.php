@@ -1,7 +1,12 @@
 <?php
 require_once '../../api/function.php';
-require_unlogined_session();
-// POSTメソッドのときのみ実行
+@session_start();
+if($_SESSION['username'] === "GUEST"){
+    $_SESSION = [];
+    session_destroy();
+}else{
+    require_unlogined_session();
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // ユーザから受け取ったユーザ名とパスワード
     $username = h(filter_input(INPUT_POST, 'username'));
@@ -63,7 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 		<input type="hidden" name="token" value="<?= h(generate_token()) ?>">
         <div class="form-group">
-            <button type="submit" id="loginBtn" class="btn btn-primary btn-lg btn-block">サインイン</button>
+            <button type="submit" id="loginBtn" class="btn btn-danger ">ログイン</button>
+            <button type="submit" formaction="guestLogin.php" id="guestLoginBtn" class="btn btn-primary " formnovalidate>ゲストログイン</button>
         </div>
     </form>
 	<p>アカウントをお持ちでないですか？ <a href="../sign-up">登録する</a></p>

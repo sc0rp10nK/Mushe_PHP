@@ -3,10 +3,6 @@ body {
   background: #2980b9;
 }
 
-.btn {
-  border-radius: 2px;
-}
-
 .input-wrap {
   position: relative;
   .toggle-pass {
@@ -36,18 +32,31 @@ body {
   }
 
   .btn {
+    border-radius: 2px;
     font-size: 16px;
     font-weight: bold;
     background: #e74c3c;
     border: none;
     outline: none !important;
-
+    margin: 0 10px;
+    width: 150px;
     &:hover,
     &:focus {
       background: #c0392b;
     }
   }
+  #guestLoginBtn {
+    font-size: 16px;
+    font-weight: bold;
+    background: #81ecec;
+    border: none;
+    outline: none !important;
 
+    &:hover,
+    &:focus {
+      background: #00cec9;
+    }
+  }
   a {
     color: #fff;
     text-decoration: underline;

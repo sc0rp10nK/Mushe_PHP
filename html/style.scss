@@ -41,3 +41,8 @@ body {
     border-radius: 2px;
   }
 }
+.text-primary a {
+  &:hover {
+    text-decoration: none;
+  }
+}
