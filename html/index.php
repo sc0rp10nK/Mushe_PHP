@@ -3,20 +3,8 @@ require_once 'api/function.php';
 $db = getDb();
 require_logined_session();
 if ($_SERVER['REQUEST_METHOD'] == 'GET') { //投稿取得
-  if (isset($_SESSION['username']) && $_SESSION['username'] != "GUEST"){
-    $username = $_SESSION['username'];
-    // bindParamを利用したSQL文の実行
-    $sql = 'SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL AND userid = :id ORDER BY date DESC;';
-    $sth = $db->prepare($sql);
-    $sth->bindParam(':id', $username);
-    $sth->execute();
-    $posts = $sth -> fetchAll(PDO::FETCH_ASSOC);
-  }else{
-    $sql = 'SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL ORDER BY date DESC;';
-    $sth = $db->query($sql);
-    $posts = $sth -> fetchAll(PDO::FETCH_ASSOC);
-  }
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST') { //投稿する
+    $db = getDb();
     // セッション開始
     @session_start();
     // ユーザー情報取得
@@ -32,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') { //投稿取得
             $content = $_POST['content'];
             $date    = date('Y-m-d H:i:s');
             $sql     = 'INSERT INTO POSTS
-(content, add_date, date, post_userid) VALUES (:content, :add_date, :date, :post_userid)';
+(content, add_date, date, userid) VALUES (:content, :add_date, :date, :userid)';
             $prepare = $db->prepare($sql);
             $prepare->bindValue(':content', $content, PDO::PARAM_STR);
             $prepare->bindValue(':add_date', $date);
             $prepare->bindValue(':date', $date);
-            $prepare->bindValue(':post_userid', $user['userid']);
+            $prepare->bindValue(':userid', $user['userid']);
             $prepare->execute();
             $uri = $_SERVER['HTTP_REFERER'];
             header('Location: ' . $uri);
@@ -52,7 +40,6 @@ define('title', 'Mushe');
 include 'global_menu.php';
 ?>
  <body>
- <?php if (isset($_SESSION['username']) && $_SESSION['username'] != "GUEST"): ?>
     <div class="post_container">
       <div id="post_box">
         <form action="" method="post">
@@ -77,30 +64,5 @@ include 'global_menu.php';
         </form>
       </div>
     </div>
-  <?php endif; ?>
-    <?php for ($i = 0; $i < count($posts); $i++): ?>
-      <div class="posts_container">
-        <div class="post_user_box">
-              <div class="post_user_icon_block">
-                <img src="img/icon.jpg" id="post_user_icon" />
-              </div>
-              <div class="post_user_name_block">
-                <p name="post_user_name" id="post_user_name"><?echo $posts[$i]["name"];?></p>
-                <p name="post_user_id" id="post_user_id">@<?echo $posts[$i]["userid"];?></p>
-              </div>
-              <div class="post_user_followbtn_block">
-                <input
-                  class="post_follow_button"
-                  id="post_follow_button"
-                  type="button"
-                  value="フォローする"
-                />
-              </div>
-        </div>
-        <div class="posts_body">
-        <p><?echo $posts[$i]["content"];?></p>
-        </div>
-      </div>
-    <?php endfor; ?>
   </body>
 </html>

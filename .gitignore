@@ -1,4 +1,3 @@
 docker/mysql/*
 docker/phpmyadmin/*
 php.ini
-img/*
