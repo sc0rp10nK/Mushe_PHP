@@ -1,5 +1,5 @@
 body {
-  background-color: #cd84f1;
+  background-color: #57606f;
 }
 .post_container {
   width: 550px;
@@ -44,5 +44,76 @@ body {
 .text-primary a {
   &:hover {
     text-decoration: none;
+  }
+}
+.posts_container {
+  width: 550px;
+  margin: 30px auto;
+  text-align: center;
+  color: #7a7a7a;
+  border-radius: 3px;
+  margin-bottom: 15px;
+  background: #f1f2f6;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  padding: 30px;
+  .post_user_box {
+    height: 5%;
+    display: flex;
+    justify-content: center;
+    .post_user_icon_block {
+      height: 45px;
+      width: 45px;
+      img {
+        width: 100%;
+        border-radius: 50%;
+        border: 2px solid #cccccc;
+      }
+      margin-right: 10px;
+    }
+    .post_user_name_block {
+      #post_user_name {
+        margin-top: 10px;
+        font-weight: bolder;
+        font-size: 20px;
+        line-height: 30px;
+        font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
+          "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック",
+          "MS PGothic", sans-serif;
+        display: inline;
+      }
+      #post_user_id {
+        font-weight: bolder;
+        font-size: 12px;
+        font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
+          "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック",
+          "MS PGothic", sans-serif;
+        text-align: left;
+      }
+    }
+    .post_user_followbtn_block {
+      .post_follow_button {
+        margin-top: 10px;
+        margin-left: 30px;
+        border: none;
+        display: inline-block;
+        font-weight: bold;
+        text-decoration: none;
+        color: #55efc4;
+        background-color: transparent;
+        font-size: 1em;
+        line-height: 25px;
+        font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
+          "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック",
+          "MS PGothic", sans-serif;
+        &:focus {
+          outline: 0;
+          color: rgba($color: #55efc4, $alpha: 0.6);
+        }
+      }
+    }
+  }
+  .posts_body {
+    padding: 15px;
+    text-align: left;
   }
 }
