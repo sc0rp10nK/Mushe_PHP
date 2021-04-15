@@ -1,0 +1,334 @@
+@charset "UTF-8";
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  height: 94vh;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.content {
+  background: #fff;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  width: 1000px;
+  height: 70%;
+  -webkit-filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.2));
+          filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.2));
+  border-radius: 10px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  border: 1px solid #cccccc;
+}
+
+.content .main_box {
+  height: 100%;
+  width: 50%;
+  padding-bottom: 10px;
+}
+
+.content .main_box .post_user_box {
+  height: 13%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border-right: 1px solid #ccc;
+}
+
+.content .main_box .post_user_box .post_user_icon_block {
+  height: 60px;
+  width: 60px;
+  margin-right: 10px;
+}
+
+.content .main_box .post_user_box .post_user_icon_block img {
+  margin-top: 15px;
+  width: 100%;
+  border-radius: 50%;
+  border: 2px solid #cccccc;
+}
+
+.content .main_box .post_user_box .post_user_name_block p {
+  margin-top: 30px;
+  font-weight: bolder;
+  font-size: 20px;
+  line-height: 30px;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+.content .main_box .post_user_box .post_user_followbtn_block .post_follow_button {
+  margin-top: 30px;
+  margin-left: 30px;
+  border: none;
+  display: inline-block;
+  font-weight: bold;
+  text-decoration: none;
+  color: #55efc4;
+  background-color: transparent;
+  font-size: 1em;
+  line-height: 25px;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+.content .main_box .post_user_box .post_user_followbtn_block .post_follow_button:focus {
+  outline: 0;
+  color: rgba(85, 239, 196, 0.6);
+}
+
+.content .main_box .post_img_box {
+  height: 65%;
+  width: 100%;
+  border-top: solid 1px #cccccc;
+  border-bottom: solid 1px #cccccc;
+}
+
+.content .main_box .post_img_box img {
+  margin: auto;
+  width: 100%;
+  height: 100%;
+}
+
+.content .main_box .footer {
+  height: 19%;
+  display: block;
+  width: 100%;
+}
+
+.content .main_box .footer .post_footer_menu {
+  height: 20%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+}
+
+.content .main_box .footer .post_footer_menu .posts_date_box {
+  position: absolute;
+  width: 5em;
+  height: 1em;
+  right: 0;
+  bottom: 0;
+  font-size: 15px;
+  margin-left: 4%;
+}
+
+.content .main_box .footer .post_footer_menu .post_like_box {
+  position: absolute;
+  width: 5em;
+  height: 1em;
+  left: 0;
+  bottom: 0;
+  margin-left: 4%;
+}
+
+.content .main_box .footer .post_footer_menu .post_like_box .fa {
+  font-size: 25px;
+  color: #f8a5c2;
+}
+
+.content .main_box .footer .post_text_box {
+  height: 80%;
+  overflow: auto;
+  margin: 10px;
+  width: 100%;
+}
+
+.content .main_box .footer .post_text_box p {
+  text-align: center;
+  font-weight: bolder;
+  font-size: 12px;
+  line-height: 30px;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+.content .post_comment_main {
+  width: 50%;
+}
+
+.content .post_comment_main .post_comment_post_box {
+  height: 13%;
+  border-bottom: 1px solid #cccccc;
+}
+
+.content .post_comment_main .post_comment_post_box .post_comment_post_user_icon_block {
+  height: 60px;
+  width: 60px;
+  margin: auto;
+}
+
+.content .post_comment_main .post_comment_post_box .post_comment_post_user_icon_block img {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  border: 2px solid #cccccc;
+}
+
+.content .post_comment_main .post_comment_post_box form {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.content .post_comment_main .post_comment_post_box .post_button {
+  border: none;
+  display: inline-block;
+  font-weight: bold;
+  text-decoration: none;
+  color: #55efc4;
+  margin: auto;
+  background-color: transparent;
+  font-size: 1em;
+  line-height: 25px;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+.content .post_comment_main .post_comment_post_box .post_button:focus {
+  outline: 0;
+  color: rgba(85, 239, 196, 0.6);
+}
+
+.content .post_comment_main .post_comment_post_box textarea {
+  outline: none;
+  width: 60%;
+  height: 80%;
+  margin: auto;
+  resize: none;
+  border: none;
+  font-size: 13px;
+  line-height: 25px;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+.content .post_comment_main .post_comment_box {
+  height: 84%;
+  overflow: auto;
+}
+
+.content .post_comment_main .post_comment_box .post_comment_block {
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+  width: 420px;
+  height: auto;
+}
+
+.content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box .post_comment_user_icon_block {
+  height: 60px;
+  width: 60px;
+  margin-right: 10px;
+}
+
+.content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box .post_comment_user_icon_block img {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  border: 2px solid #cccccc;
+}
+
+.content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box .post_comment_body {
+  display: block;
+}
+
+.content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box .post_comment_body .post_comment_user_name_block {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box .post_comment_body .post_comment_user_name_block p {
+  font-weight: bolder;
+  font-size: 15px;
+  line-height: 30px;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+.content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box .post_comment_body .post_comment_user_name_block .post_comment_time {
+  font-size: 13px;
+  color: #cccccc;
+}
+
+.content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box .post_comment_body .post_comment_main {
+  width: auto;
+  font-size: 14px;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+@media screen and (max-width: 1000px) {
+  .content {
+    height: 90%;
+    overflow: auto;
+    width: 500px;
+    display: block;
+  }
+  .content::-webkit-scrollbar {
+    width: 10px;
+  }
+  .content::-webkit-scrollbar-track {
+    background: #fff;
+    border: none;
+    border-radius: 0 10px 10px 0;
+    -webkit-box-shadow: inset 0 0 2px #777;
+            box-shadow: inset 0 0 2px #777;
+  }
+  .content::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 0 10px 10px 0;
+    border: none;
+  }
+  .content .main_box {
+    height: 100%;
+    width: 100%;
+  }
+  .content .main_box .post_img_box {
+    height: 60%;
+    width: 100%;
+  }
+  .content .main_box .post_user_box {
+    border: none;
+  }
+  .content .main_box .footer {
+    height: 25%;
+  }
+  .content .main_box .footer .post_text_box {
+    width: 450px;
+    margin: auto;
+  }
+  .content .post_comment_main {
+    height: auto;
+    width: 100%;
+    margin: auto;
+  }
+  .content .post_comment_main .post_comment_post_box {
+    border: 0px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+  }
+}

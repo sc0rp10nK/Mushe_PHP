@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') { //投稿取得
         $user = $sth->fetch();
         if (isset($_POST['content']) && validate_token(filter_input(INPUT_POST, 'token'))) {
             $content = $_POST['content'];
-            $date    = date('Y-m-d H:i:s');
+            $date    = date('Y/m/d H:i:s');
             $sql     = 'INSERT INTO POSTS
 (content, add_date, date, post_userid) VALUES (:content, :add_date, :date, :post_userid)';
             $prepare = $db->prepare($sql);
@@ -80,26 +80,33 @@ include 'global_menu.php';
   <?php endif; ?>
     <?php for ($i = 0; $i < count($posts); $i++): ?>
       <div class="posts_container">
-        <div class="post_user_box">
-              <div class="post_user_icon_block">
-                <img src="img/icon.jpg" id="post_user_icon" />
-              </div>
-              <div class="post_user_name_block">
-                <p name="post_user_name" id="post_user_name"><?echo $posts[$i]["name"];?></p>
-                <p name="post_user_id" id="post_user_id">@<?echo $posts[$i]["userid"];?></p>
-              </div>
-              <div class="post_user_followbtn_block">
-                <input
-                  class="post_follow_button"
-                  id="post_follow_button"
-                  type="button"
-                  value="フォローする"
-                />
-              </div>
-        </div>
-        <div class="posts_body">
-        <p><?echo $posts[$i]["content"];?></p>
-        </div>
+          <div class="post_user_box">
+                <div class="post_user_icon_block">
+                  <img src="img/icon.jpg" id="post_user_icon" />
+                </div>
+                <div class="post_user_name_block">
+                  <p name="post_user_name" id="post_user_name"><?echo $posts[$i]["name"];?></p>
+                  <p name="post_user_id" id="post_user_id">@<?echo $posts[$i]["userid"];?></p>
+                </div>
+                <div class="post_user_followbtn_block">
+                  <input
+                    class="post_follow_button"
+                    id="post_follow_button"
+                    type="button"
+                    value="フォローする"
+                  />
+                </div>
+          </div>
+          <div class="posts_body">
+          <p><?echo $posts[$i]["content"];?></p>
+          </div>
+          <div class="posts_footer">
+          <p class="posts_date"><? echo  convert_to_fuzzy_time($posts[$i]["date"]);?></p>
+          </div>
+          <a class ="link" href="/p?p=<?echo $posts[$i]["postid"]?>"></a>
+          <a class ="link2" href="/p?p=<?echo $posts[$i]["postid"]?>"></a>
+          <a class ="link3" href="/p?p=<?echo $posts[$i]["postid"]?>"></a>
+          <a class ="link4" href="/p?p=<?echo $posts[$i]["postid"]?>"></a>
       </div>
     <?php endfor; ?>
   </body>
