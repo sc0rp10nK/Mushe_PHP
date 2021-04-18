@@ -63,39 +63,17 @@ body {
   .link {
     display: block;
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 60%;
-  }
-  .link2 {
-    display: block;
-    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 20%;
-  }
-  .link3 {
-    display: block;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 25%;
-    height: 100%;
-  }
-  .link4 {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 25%;
     height: 100%;
   }
   .post_user_box {
     height: 5%;
     display: flex;
     justify-content: center;
+    position: relative;
+    z-index: 1;
     .post_user_icon_block {
       height: 45px;
       width: 45px;

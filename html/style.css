@@ -78,36 +78,9 @@ body {
 .posts_container .link {
   display: block;
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  height: 60%;
-}
-
-.posts_container .link2 {
-  display: block;
-  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 20%;
-}
-
-.posts_container .link3 {
-  display: block;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 25%;
-  height: 100%;
-}
-
-.posts_container .link4 {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 25%;
   height: 100%;
 }
 
@@ -121,6 +94,8 @@ body {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 
 .posts_container .post_user_box .post_user_icon_block {

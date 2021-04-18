@@ -76,6 +76,16 @@ function getDb()
         $db = null;
     }
 }
+function getUser($db){
+    $username = $_SESSION['username'];
+    // bindParamを利用したSQL文の実行
+    $sql      = 'SELECT * FROM USERS WHERE userid = :id;';
+    $sth      = $db->prepare($sql);
+    $sth->bindParam(':id', $username);
+    $sth->execute();
+    $user = $sth->fetch();
+    return $user;
+}
 /**
  * https://gist.github.com/wgkoro/4985763から引用
  * X秒前、X分前、X時間前、X日前などといった表示に変換する。

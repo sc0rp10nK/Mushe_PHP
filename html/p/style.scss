@@ -26,7 +26,7 @@
     width: 50%;
     padding-bottom: 10px;
     .post_user_box {
-      height: 13%;
+      height: 10%;
       display: flex;
       justify-content: center;
       border-right: 1px solid #ccc;
@@ -43,7 +43,7 @@
       }
       .post_user_name_block {
         p {
-          margin-top: 30px;
+          margin-top: 15px;
           font-weight: bolder;
           font-size: 20px;
           line-height: 30px;
@@ -54,7 +54,7 @@
       }
       .post_user_followbtn_block {
         .post_follow_button {
-          margin-top: 30px;
+          margin-top: 17px;
           margin-left: 30px;
           border: none;
           display: inline-block;
@@ -267,6 +267,14 @@
       }
       .post_user_box {
         border: none;
+        .post_user_name_block {
+          margin-top: 15px;
+        }
+        .post_user_followbtn_block {
+          .post_follow_button {
+            margin-top: 32px;
+          }
+        }
       }
       .footer {
         height: 25%;

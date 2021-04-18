@@ -104,9 +104,6 @@ include 'global_menu.php';
           <p class="posts_date"><? echo  convert_to_fuzzy_time($posts[$i]["date"]);?></p>
           </div>
           <a class ="link" href="/p?p=<?echo $posts[$i]["postid"]?>"></a>
-          <a class ="link2" href="/p?p=<?echo $posts[$i]["postid"]?>"></a>
-          <a class ="link3" href="/p?p=<?echo $posts[$i]["postid"]?>"></a>
-          <a class ="link4" href="/p?p=<?echo $posts[$i]["postid"]?>"></a>
       </div>
     <?php endfor; ?>
   </body>

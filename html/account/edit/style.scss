@@ -1,0 +1,110 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+main {
+  height: 94vh;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+.content {
+  background: #fff;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 70%;
+  filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.2));
+  border-radius: 10px;
+  display: flex;
+  border: 1px solid #cccccc;
+  .edit_nav {
+    width: 30%;
+    border-right: 1px solid #cccccc;
+    .nav-link {
+      margin-top: 10px;
+    }
+  }
+  .edit_body {
+    width: 70%;
+    text-align: center;
+    .user_icon_block {
+      height: 150px;
+      width: 150px;
+      margin: 30px auto 0px auto;
+      img {
+        width: 100%;
+        border-radius: 50%;
+        border: 2px solid #cccccc;
+      }
+    }
+    .form-group {
+      margin-top: 20px;
+      border: #7a7a7a;
+    }
+    .form-control {
+      min-height: 41px;
+      background: #f2f2f2;
+      box-shadow: none !important;
+      border: transparent;
+      padding: 0 40px 0 20px;
+
+      &:focus {
+        background: #e2e2e2;
+      }
+
+      border-radius: 2px;
+    }
+    form {
+      margin: 10px auto;
+      color: #7a7a7a;
+      border-radius: 3px;
+      margin-bottom: 15px;
+      background: #fff;
+    }
+
+    .btn {
+      font-size: 16px;
+      font-weight: bold;
+      background: #3598dc;
+      border: none;
+      outline: none !important;
+
+      &:hover,
+      &:focus {
+        background: #2389cd;
+      }
+    }
+    .input-wrap-old {
+      position: relative;
+      .oldtoggle-pass {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+      }
+    }
+    .input-wrap {
+      position: relative;
+      .toggle-pass {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+      }
+    }
+    .input-wrap-pass-confirmation {
+      position: relative;
+      .toggle-pass-confirmation {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+      }
+    }
+  }
+}
