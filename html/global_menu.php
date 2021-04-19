@@ -1,15 +1,10 @@
 <?php
 @session_start();
-require_once 'api/function.php';
+require_once "api/function.php";
 $db = getDb();
-if (isset($_SESSION['username'])) {
-    $username = $_SESSION['username'];
-    // bindParamを利用したSQL文の実行
-    $sql = 'SELECT * FROM USERS WHERE userid = :id;';
-    $sth = $db->prepare($sql);
-    $sth->bindParam(':id', $username);
-    $sth->execute();
-    $user = $sth->fetch();
+if (isset($_SESSION["username"])) {
+    //ログインユーザーの情報取得
+    $user = getUser($db);
 }
 ?>
 <head>
@@ -25,11 +20,25 @@ if (isset($_SESSION['username'])) {
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="/">Mushe</a>
-      <?php if (isset($_SESSION['username']) && $_SESSION['username'] != "GUEST"): ?>
-      <div>
-      <span class="text-primary"><?echo $user['name']?> / <a href="/account/logout">ログアウト</a></span>
-      </div>
-      <?php elseif ($_SESSION['username'] === "GUEST"):?>
+      <?php if (
+          isset($_SESSION["username"]) &&
+          $_SESSION["username"] != "GUEST"
+      ): ?>
+      <ul class="navbar-nav ">
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <img src="/actions/image.php?id=<?echo h($user["userid"]);?>" class="avatar" alt="Avatar">
+        </a>
+        <!-- この下の行に dropdown-menu-right を追加するだけ。 -->
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="#"><i class="fa fa-user-o"></i> プロフィール</a>
+        <a class="dropdown-item" href="/account/edit"><i class="fa fa-cog" aria-hidden="true"></i> プロフィール編集</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="/account/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> ログアウト</a>
+        </div>
+      </li>
+      </ul>
+      <?php elseif ($_SESSION["username"] === "GUEST"): ?>
         <span class="text-primary"><a href="/account/login">ログイン</a></span>
       <?php endif; ?>
     </div>

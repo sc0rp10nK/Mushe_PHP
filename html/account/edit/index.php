@@ -1,46 +1,92 @@
 <?php
-require_once '../../api/function.php';
-$db = getDb();
+// セッション開始
+@session_start();
+require_once "../../api/function.php";
 require_logined_session();
+$db = getDb();
+//ログインユーザーの情報取得
 $user = getUser($db);
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        if (isset($_POST['type']) && validate_token(filter_input(INPUT_POST, 'token'))) {
-            if($_POST['type'] == 'pedit'){
-                $name = $_POST['name'];
-                $username = $_SESSION['username'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (
+        isset($_POST["type"]) &&
+        validate_token(filter_input(INPUT_POST, "token"))
+    ) {
+        if ($_POST["type"] == "pedit") {
+            $username = $_SESSION["username"];
+            if (!empty($_FILES["image"]["name"])) {
                 // bindParamを利用したSQL文の実行
-                $sql='SELECT COUNT(*) AS cnt FROM USER_PROFILE_IMAGES WHERE image_userid = :id;';
-                $sth= $db->prepare($sql);
-                $sth->bindParam(':id', $username);
+                $sql =
+                    "SELECT COUNT(*) AS cnt FROM USER_PROFILE_IMAGES WHERE image_userid = :id;";
+                $sth = $db->prepare($sql);
+                $sth->bindParam(":id", $username);
                 $sth->execute();
-                $result =  $sth -> fetchAll(PDO::FETCH_ASSOC);
-                if($result[0]['cnt'] > 0){
-                }else{
-                    if (isset($_FILES['image']['name'])) {
-                        $name = $_FILES['image']['name'];
-                        $type = $_FILES['image']['type'];
-                        $content = file_get_contents($_FILES['image']['tmp_name']);
-                        $size = $_FILES['image']['size'];
+                $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+                if ($result[0]["cnt"] > 0) {
+                    $name = $_FILES["image"]["name"];
+                    $type = $_FILES["image"]["type"];
+                    $content = file_get_contents($_FILES["image"]["tmp_name"]);
+                    $size = $_FILES["image"]["size"];
+                    $sql =
+                        "UPDATE USER_PROFILE_IMAGES SET image_name = :image_name , image_type = :image_type, image_content = :image_content, image_size = :image_size, created_at = now() WHERE image_userid = :image_userid; ";
+                    $stmt = $db->prepare($sql);
+                    $stmt->bindValue(":image_name", $name, PDO::PARAM_STR);
+                    $stmt->bindValue(":image_type", $type, PDO::PARAM_STR);
+                    $stmt->bindValue(
+                        ":image_content",
+                        $content,
+                        PDO::PARAM_STR
+                    );
+                    $stmt->bindValue(":image_size", $size, PDO::PARAM_INT);
+                    $stmt->bindValue(
+                        ":image_userid",
+                        $username,
+                        PDO::PARAM_STR
+                    );
+                    $stmt->execute();
+                } else {
+                    if (isset($_FILES["image"]["name"])) {
+                        $name = $_FILES["image"]["name"];
+                        $type = $_FILES["image"]["type"];
+                        $content = file_get_contents(
+                            $_FILES["image"]["tmp_name"]
+                        );
+                        $size = $_FILES["image"]["size"];
                         $sql = 'INSERT INTO USER_PROFILE_IMAGES(image_name, image_type, image_content, image_size, created_at,image_userid)
-                                    VALUES (:image_name, :image_type, :image_content, :image_size, now(),:image_userid)';
+                                        VALUES (:image_name, :image_type, :image_content, :image_size, now(),:image_userid)';
                         $stmt = $db->prepare($sql);
-                        $stmt->bindValue(':image_name', $name, PDO::PARAM_STR);
-                        $stmt->bindValue(':image_type', $type, PDO::PARAM_STR);
-                        $stmt->bindValue(':image_content', $content, PDO::PARAM_STR);
-                        $stmt->bindValue(':image_size', $size, PDO::PARAM_INT);
-                        $stmt->bindValue(':image_userid', $username, PDO::PARAM_STR);
+                        $stmt->bindValue(":image_name", $name, PDO::PARAM_STR);
+                        $stmt->bindValue(":image_type", $type, PDO::PARAM_STR);
+                        $stmt->bindValue(
+                            ":image_content",
+                            $content,
+                            PDO::PARAM_STR
+                        );
+                        $stmt->bindValue(":image_size", $size, PDO::PARAM_INT);
+                        $stmt->bindValue(
+                            ":image_userid",
+                            $username,
+                            PDO::PARAM_STR
+                        );
                         $stmt->execute();
                     }
                 }
+            } elseif (isset($_POST["name"])) {
+                $name = $_POST["name"];
+                $sql = "UPDATE USERS SET name = :name WHERE userid = :userid";
+                $stmt = $db->prepare($sql);
+                $stmt->bindValue(":name", $name, PDO::PARAM_STR);
+                $stmt->bindValue(":userid", $username, PDO::PARAM_STR);
+                $stmt->execute();
             }
-       }
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
 <html lang="ja">
 <?php
-define('title', 'Mushe');
-include '../../global_menu.php';
+define("title", "Mushe");
+include "../../global_menu.php";
 ?>
 <body>
 <main class="p-3">
@@ -58,7 +104,7 @@ include '../../global_menu.php';
                     <div class="tab-content" id="v-pills-tabContent">
                     <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                     <div id="preview" class="user_icon_block">
-                        <img src="/actions/image.php?id=<?echo h($username)?>">
+                        <img src="/actions/image.php?id=<?echo h($user['userid']);?>">
                     </div>
                     <form action="" method="post" enctype="multipart/form-data">
                         <div class="form-group">
@@ -71,7 +117,9 @@ include '../../global_menu.php';
                         <div class="form-group">
                             <button type="submit" id="profileEditBtn" class="btn btn-primary btn-lg btn-block">変更</button>
                         </div>
-                        <input type="hidden" name="token" value="<?= h(generate_token()) ?>">
+                        <input type="hidden" name="token" value="<?= h(
+                            generate_token()
+                        ) ?>">
                         <input type="hidden" name="type" value="pedit">
                     </form>
                     </div>

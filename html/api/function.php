@@ -9,8 +9,8 @@ function require_unlogined_session()
     // セッション開始
     @session_start();
     // ログインしていれば / に遷移
-    if (isset($_SESSION['username'])) {
-        header('Location: /');
+    if (isset($_SESSION["username"])) {
+        header("Location: /");
         exit();
     }
 }
@@ -19,8 +19,8 @@ function require_logined_session()
     // セッション開始
     @session_start();
     // ログインしていなければ /login.php に遷移
-    if (!isset($_SESSION['username'])) {
-        header('Location: /account/login');
+    if (!isset($_SESSION["username"])) {
+        header("Location: /account/login");
         exit();
     }
 }
@@ -33,7 +33,7 @@ function require_logined_session()
 function generate_token()
 {
     // セッションIDからハッシュを生成
-    return hash('sha256', session_id());
+    return hash("sha256", session_id());
 }
 
 /**
@@ -56,32 +56,33 @@ function validate_token($token)
  */
 function h($str)
 {
-    return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars($str, ENT_QUOTES, "UTF-8");
 }
 // DBへ接続するファイルを外部化
 function getDb()
 {
-    $dsn = 'mysql:dbname=SNS; host=sns_mysql; charset=utf8';
-    $usr = 'usr';
-    $passwd = 'password';
+    $dsn = "mysql:dbname=SNS; host=sns_mysql; charset=utf8";
+    $usr = "usr";
+    $passwd = "password";
 
     try {
         $db = new PDO($dsn, $usr, $passwd);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $db;
     } catch (PDOException $e) {
-        header('Content-Type: text/plain; charset=UTF-8', true, 500);
+        header("Content-Type: text/plain; charset=UTF-8", true, 500);
         exit($e->getMessage());
     } finally {
         $db = null;
     }
 }
-function getUser($db){
-    $username = $_SESSION['username'];
+function getUser($db)
+{
+    $username = $_SESSION["username"];
     // bindParamを利用したSQL文の実行
-    $sql      = 'SELECT * FROM USERS WHERE userid = :id;';
-    $sth      = $db->prepare($sql);
-    $sth->bindParam(':id', $username);
+    $sql = "SELECT * FROM USERS WHERE userid = :id;";
+    $sth = $db->prepare($sql);
+    $sth->bindParam(":id", $username);
     $sth->execute();
     $user = $sth->fetch();
     return $user;
@@ -96,38 +97,34 @@ function getUser($db){
  * @param   <String> $time_db       strtotime()で変換できる時間文字列 (例：yyyy/mm/dd H:i:s)
  * @return  <String>                X日前,などといった文字列
  **/
-function convert_to_fuzzy_time($time_db){
-    $unix   = strtotime($time_db);
-    $now    = time();
-    $diff_sec   = $now - $unix;
+function convert_to_fuzzy_time($time_db)
+{
+    $unix = strtotime($time_db);
+    $now = time();
+    $diff_sec = $now - $unix;
 
-    if($diff_sec < 60){
-        $time   = $diff_sec;
-        $unit   = "秒前";
-    }
-    elseif($diff_sec < 3600){
-        $time   = $diff_sec/60;
-        $unit   = "分前";
-    }
-    elseif($diff_sec < 86400){
-        $time   = $diff_sec/3600;
-        $unit   = "時間前";
-    }
-    elseif($diff_sec < 2764800){
-        $time   = $diff_sec/86400;
-        $unit   = "日前";
-    }
-    else{
-        if(date("Y") != date("Y", $unix)){
-            $time   = date("Y年n月j日", $unix);
-        }
-        else{
-            $time   = date("n月j日", $unix);
+    if ($diff_sec < 60) {
+        $time = $diff_sec;
+        $unit = "秒前";
+    } elseif ($diff_sec < 3600) {
+        $time = $diff_sec / 60;
+        $unit = "分前";
+    } elseif ($diff_sec < 86400) {
+        $time = $diff_sec / 3600;
+        $unit = "時間前";
+    } elseif ($diff_sec < 2764800) {
+        $time = $diff_sec / 86400;
+        $unit = "日前";
+    } else {
+        if (date("Y") != date("Y", $unix)) {
+            $time = date("Y年n月j日", $unix);
+        } else {
+            $time = date("n月j日", $unix);
         }
 
         return $time;
     }
 
-    return (int)$time .$unit;
+    return (int) $time . $unit;
 }
 ?>

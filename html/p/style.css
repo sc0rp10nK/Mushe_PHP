@@ -21,7 +21,7 @@
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
   width: 1000px;
-  height: 70%;
+  height: 75%;
   -webkit-filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.2));
           filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.2));
   border-radius: 10px;
@@ -39,7 +39,7 @@
 }
 
 .content .main_box .post_user_box {
-  height: 10%;
+  height: 20%;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -65,7 +65,8 @@
 }
 
 .content .main_box .post_user_box .post_user_name_block p {
-  margin-top: 15px;
+  margin-top: 30px;
+  margin-left: 10px;
   font-weight: bolder;
   font-size: 20px;
   line-height: 30px;
@@ -73,7 +74,7 @@
 }
 
 .content .main_box .post_user_box .post_user_followbtn_block .post_follow_button {
-  margin-top: 17px;
+  margin-top: 32px;
   margin-left: 30px;
   border: none;
   display: inline-block;
@@ -92,7 +93,7 @@
 }
 
 .content .main_box .post_img_box {
-  height: 65%;
+  height: 60%;
   width: 100%;
   border-top: solid 1px #cccccc;
   border-bottom: solid 1px #cccccc;
@@ -105,7 +106,7 @@
 }
 
 .content .main_box .footer {
-  height: 19%;
+  height: 20%;
   display: block;
   width: 100%;
 }
@@ -313,8 +314,6 @@
   }
   .content .main_box .post_user_box {
     border: none;
-  }
-  .content .main_box .post_user_box .post_user_name_block {
     margin-top: 15px;
   }
   .content .main_box .post_user_box .post_user_followbtn_block .post_follow_button {
@@ -337,4 +336,47 @@
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
   }
+}
+
+.navbar .avatar {
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  border: 2px solid #cccccc;
+  margin-right: 10px;
+}
+
+.navbar .dropdown-menu i {
+  font-size: 16px;
+  min-width: 10px;
+}
+
+.navbar .dropdown.open > a {
+  background: none !important;
+}
+
+.navbar .dropdown-menu {
+  border-radius: 9px;
+  border-color: #e5e5e5;
+  -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.navbar .dropdown-menu li a {
+  color: #777;
+  padding: 10px 20px;
+  line-height: normal;
+  text-decoration: none;
+}
+
+.navbar .dropdown-menu li a:hover, .navbar .dropdown-menu li a:active {
+  color: #333;
+  text-decoration: none;
+}
+
+.navbar .dropdown-menu .material-icons {
+  font-size: 21px;
+  line-height: 16px;
+  vertical-align: middle;
+  margin-top: -2px;
 }
