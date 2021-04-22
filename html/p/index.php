@@ -66,7 +66,7 @@
               isset($_SESSION["username"]) &&
               $_SESSION["username"] != "GUEST"
           ): ?>
-            <form action="post" name="comment_post">
+            <form action="" method="post" name="comment_post">
               <div class="post_comment_post_user_icon_block">
                 <img src="/actions/image.php?id=<?echo h($user['userid']);?>" id="post_comment_user_icon" />
               </div>

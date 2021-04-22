@@ -20,7 +20,6 @@ main {
   filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.2));
   border-radius: 10px;
   display: flex;
-  border: 1px solid #cccccc;
   .edit_nav {
     width: 30%;
     border-right: 1px solid #cccccc;
@@ -37,6 +36,7 @@ main {
       width: 150px;
       margin: 30px auto 0px auto;
       img {
+        height: 100%;
         width: 100%;
         border-radius: 50%;
         border: 2px solid #cccccc;
@@ -109,12 +109,12 @@ main {
     }
   }
 }
-.navbar{
+.navbar {
   .avatar {
     height: 45px;
     width: 45px;
-      border-radius: 50%;
-      border: 2px solid #cccccc;
+    border-radius: 50%;
+    border: 2px solid #cccccc;
     margin-right: 10px;
   }
   .dropdown-menu i {
@@ -136,7 +136,8 @@ main {
       padding: 10px 20px;
       line-height: normal;
       text-decoration: none;
-      &:hover, &:active {
+      &:hover,
+      &:active {
         color: #333;
         text-decoration: none;
       }

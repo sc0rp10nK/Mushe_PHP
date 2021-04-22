@@ -5,10 +5,20 @@ body {
   width: 550px;
   margin: 30px auto;
   text-align: center;
-  h2 {
-    margin: 10px 0 25px;
+  .post_user_icon_block {
+    height: 60px;
+    width: 60px;
+    margin: auto;
+    img {
+      height: 60px;
+      width: 60px;
+      border-radius: 50%;
+      border: 2px solid #cccccc;
+    }
   }
   form {
+    height: 100%;
+    display: flex;
     color: #7a7a7a;
     border-radius: 10px;
     margin-bottom: 15px;
@@ -16,29 +26,43 @@ body {
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
     padding: 30px;
   }
-  .btn {
-    font-size: 16px;
-    font-weight: bold;
-    background: #3598dc;
-    border: none;
-    outline: none !important;
-
-    &:hover,
-    &:focus {
-      background: #2389cd;
-    }
-  }
   .form-control {
-    min-height: 41px;
-    background: #f2f2f2;
+    min-height: 100px;
     box-shadow: none !important;
     border: transparent;
-    padding: 0 20px;
     display: flex;
-    &:focus {
-      background: #e2e2e2;
-    }
     border-radius: 2px;
+  }
+  .post_button {
+    border: none;
+    display: inline-block;
+    font-weight: bold;
+    text-decoration: none;
+    color: #55efc4;
+    margin: auto;
+    background-color: transparent;
+    font-size: 1em;
+    line-height: 25px;
+    font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
+      "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック",
+      "MS PGothic", sans-serif;
+    &:focus {
+      outline: 0;
+      color: rgba($color: #55efc4, $alpha: 0.6);
+    }
+  }
+  textarea {
+    outline: none;
+    width: 60%;
+    height: 80%;
+    margin: auto;
+    resize: none;
+    border: none;
+    font-size: 13px;
+    line-height: 25px;
+    font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
+      "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック",
+      "MS PGothic", sans-serif;
   }
 }
 .text-primary a {
@@ -79,6 +103,7 @@ body {
       width: 45px;
       img {
         width: 100%;
+        height: 100%;
         border-radius: 50%;
         border: 2px solid #cccccc;
       }
@@ -126,6 +151,16 @@ body {
       }
     }
   }
+  #post_delete {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    z-index: 1;
+    color: #ff7979;
+    &:hover {
+      color: #d63031;
+    }
+  }
   .posts_body {
     padding: 15px;
     text-align: left;
@@ -140,12 +175,21 @@ body {
     }
   }
 }
-.navbar{
+.modal-content {
+  border-radius: 10px;
+  .modal-header {
+    border: none;
+  }
+  .modal-footer {
+    border: none;
+  }
+}
+.navbar {
   .avatar {
     height: 45px;
     width: 45px;
-      border-radius: 50%;
-      border: 2px solid #cccccc;
+    border-radius: 50%;
+    border: 2px solid #cccccc;
     margin-right: 10px;
   }
   .dropdown-menu i {
@@ -167,7 +211,8 @@ body {
       padding: 10px 20px;
       line-height: normal;
       text-decoration: none;
-      &:hover, &:active {
+      &:hover,
+      &:active {
         color: #333;
         text-decoration: none;
       }

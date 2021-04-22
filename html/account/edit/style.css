@@ -28,7 +28,6 @@ main {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  border: 1px solid #cccccc;
 }
 
 .content .edit_nav {
@@ -53,6 +52,7 @@ main {
 }
 
 .content .edit_body .user_icon_block img {
+  height: 100%;
   width: 100%;
   border-radius: 50%;
   border: 2px solid #cccccc;

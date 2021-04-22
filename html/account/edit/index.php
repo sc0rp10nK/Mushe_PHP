@@ -11,7 +11,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         isset($_POST["type"]) &&
         validate_token(filter_input(INPUT_POST, "token"))
     ) {
-        if ($_POST["type"] == "pedit") {
+        $msg;
+        $msgEnable = false;
+        if ($_POST["type"] === "pedit") {
             $username = $_SESSION["username"];
             if (!empty($_FILES["image"]["name"])) {
                 // bindParamを利用したSQL文の実行
@@ -43,6 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         PDO::PARAM_STR
                     );
                     $stmt->execute();
+                    $msgEnable = true;
+                    $msg = "プロフィールの変更しました。";
                 } else {
                     if (isset($_FILES["image"]["name"])) {
                         $name = $_FILES["image"]["name"];
@@ -68,6 +72,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             PDO::PARAM_STR
                         );
                         $stmt->execute();
+                        $msgEnable = true;
+                        $msg = "プロフィールの変更しました。";
                     }
                 }
             } elseif (isset($_POST["name"])) {
@@ -77,6 +83,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->bindValue(":name", $name, PDO::PARAM_STR);
                 $stmt->bindValue(":userid", $username, PDO::PARAM_STR);
                 $stmt->execute();
+                $msgEnable = true;
+                $msg = "プロフィールの変更しました。";
+            }
+        }elseif($_POST["type"] === "pwchg"){
+            $username = $_SESSION["username"];
+            if(isset($_POST['oldpassword']) && isset($_POST['password']) && isset($_POST['password-confirmation'])){
+                try{
+                    $oldpass = $_POST['oldpassword'];
+                    $newpass = $_POST['password'];
+                    $newpassConfirm = $_POST['password-confirmation'];
+                    $pass_reg_str = "/^(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,50}$/i";
+                    if(!preg_match($pass_reg_str,h($oldpass)) && !preg_match($pass_reg_str,h($newpass)) && !preg_match($pass_reg_str,h($newpassConfirm))){
+                        throw new Exception('変更失敗しました。');
+                    }elseif(!$newpass === $newpassConfirm){
+                        throw new Exception('変更失敗しました。');
+                    }
+                    // データベースへの接続開始
+                    $db = getDb();
+                    // bindParamを利用したSQL文の実行
+                    $sql = 'SELECT * FROM USERS WHERE userid = :id;';
+                    $sth = $db->prepare($sql);
+                    $sth->bindParam(':id', $username);
+                    $sth->execute();
+                    $result = $sth->fetch();
+                    //認証処理
+                    if (
+                        validate_token(filter_input(INPUT_POST, 'token')) &&
+                        password_verify($oldpass, $result['pwHash'])
+                    ){
+                        $sql = "UPDATE USERS SET pwHash = :pwHash WHERE userid = :userid";
+                        $stmt = $db->prepare($sql);
+                        $stmt->bindValue(':pwHash',password_hash($newpass, PASSWORD_DEFAULT));
+                        $stmt->bindValue(":userid", $username, PDO::PARAM_STR);
+                        $stmt->execute();
+                        $msgEnable = true;
+                        $msg = "パスワードを変更しました";
+                    }else {
+                        // 認証が失敗したとき
+                        // 「403 Forbidden」
+                        http_response_code(403);
+                    }
+                } catch (PDOException $e) {
+                    $errmsg = '変更失敗しました。';
+                    $msgEnable = true;
+                } catch(Exception $e){
+                    $errmsg = $e->getMessage();
+                    $msgEnable = true;
+                }
             }
         }
     }
@@ -87,6 +141,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php
 define("title", "Mushe");
 include "../../global_menu.php";
+if(!empty($msg) && $msgEnable){
+    print "<script>iziToast.success({ title: 'SUCCESS', message: '{$msg}',position: 'topRight' });</script>";
+}elseif(!empty($errmsg) && $msgEnable){
+    print "<script>iziToast.error({ title: 'ERROR', message: '{$errmsg}',position: 'topRight' });</script>";
+}
 ?>
 <body>
 <main class="p-3">
@@ -104,7 +163,7 @@ include "../../global_menu.php";
                     <div class="tab-content" id="v-pills-tabContent">
                     <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                     <div id="preview" class="user_icon_block">
-                        <img src="/actions/image.php?id=<?echo h($user['userid']);?>">
+                        <img id="preview_img" src="/actions/image.php?id=<?echo h($user['userid']);?>">
                     </div>
                     <form action="" method="post" enctype="multipart/form-data">
                         <div class="form-group">
@@ -146,6 +205,10 @@ include "../../global_menu.php";
                                 <i class="toggle-pass-confirmation fa fa-eye"></i>
                             </div>
                         </div>
+                        <input type="hidden" name="token" value="<?= h(
+                            generate_token()
+                        ) ?>">
+                        <input type="hidden" name="type" value="pwchg">
                         <div class="form-group">
                             <button type="submit" id="editBtn" class="btn btn-primary btn-lg btn-block">変更</button>
                         </div>
@@ -159,12 +222,12 @@ include "../../global_menu.php";
 <script>
 $(function(){
     $('#input-file').change(function(){
-        $('img').remove();
+        $('#preview_img').remove();
         var file = $(this).prop('files')[0];
         var fileReader = new FileReader();
         fileReader.onloadend = function() {
             $('#preview').html('<img src="' + fileReader.result + '"/>');
-            $('img').addClass('resize-image');
+            $('#preview_img').addClass('resize-image');
         }
         fileReader.readAsDataURL(file);
     });

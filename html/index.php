@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     // セッション開始
     @session_start();
     // ユーザー情報取得
-    if (isset($_SESSION["username"])) {
+    if (isset($_SESSION["username"]) && $_SESSION["username"] != "GUEST") {
         $username = $_SESSION["username"];
         // bindParamを利用したSQL文の実行
         $sql = "SELECT * FROM USERS WHERE userid = :id;";
@@ -61,32 +61,48 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
  <body>
  <?php if (isset($_SESSION["username"]) && $_SESSION["username"] != "GUEST"): ?>
     <div class="post_container">
-      <div id="post_box">
-        <form action="" method="post">
-          <h3 class="text-center">POST</h3>
-          <input
-            type="hidden"
-            name="token"
-            value="<?= h(generate_token()) ?>"
-          />
-          <div class="input-group">
-            <input class="form-control" name="content" id="content" required />
-            <span class="input-group-btn">
-              <button
+           <?php if (
+              isset($_SESSION["username"]) &&
+              $_SESSION["username"] != "GUEST"
+          ): ?>
+            <form action="" method="post" name="post">
+              <input
+              type="hidden"
+              name="token"
+              value="<?= h(generate_token()) ?>"
+              />
+              <div class="post_user_icon_block">
+                <img src="/actions/image.php?id=<?echo h($user['userid']);?>" id="post_comment_user_icon" />
+              </div>
+              <textarea class="form-control" name="content" id="content"  required></textarea>
+              <input
+                class="post_button"
+                id="post_button"
                 type="submit"
-                class="btn btn-primary btn-lg btn-block"
-                id="post_btn"
-              >
-                <i class="fa fa-paper-plane"></i>
-              </button>
-            </span>
-          </div>
-        </form>
+                value="投稿"
+                disabled
+              />
+            </form>
+            <?php endif; ?>
       </div>
     </div>
   <?php endif; ?>
     <?php for ($i = 0; $i < count($posts); $i++): ?>
       <div class="posts_container">
+      <?php if (
+                isset($_SESSION["username"]) &&
+                $_SESSION["username"] != "GUEST" &&
+                $posts[$i]["userid"] == $_SESSION["username"]
+            ): ?>
+      <form id="delete" action="actions/delete.php" method="post">
+        <a id="post_delete" data-toggle="modal" data-target="#exampleModal" ><i class="fa fa-times" aria-hidden="true"></i></a>
+        <input
+            type="hidden"
+            name="postid"
+            value="<?echo $posts[$i]["postid"]?>"
+        />
+      </form>
+      <?php endif;?>
           <div class="post_user_box">
                 <div class="post_user_icon_block">
                   <img src="/actions/image.php?id=<?echo h($posts[$i]["userid"]);?>" id="post_user_icon" />
@@ -111,7 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 <?php endif; ?>
           </div>
           <div class="posts_body">
-          <p><?echo $posts[$i]["content"];?></p>
+          <p><?echo nl2br($posts[$i]["content"]);?></p>
           </div>
           <div class="posts_footer">
           <p class="posts_date"><? echo  convert_to_fuzzy_time($posts[$i]["date"]);?></p>
@@ -119,5 +135,25 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
           <a class ="link" href="/p?p=<?echo $posts[$i]["postid"]?>"></a>
       </div>
     <?php endfor; ?>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">投稿を削除しますか？</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      <div class="modal-body">
+        <p>この操作は取り消せません。プロフィール、あなたをフォローしているアカウントのタイムライン、Musheの検索結果から投稿が削除されます。 </p>
+      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">いいえ</button>
+          <button type="submit" form="delete" class="btn btn-primary">削除する</button>
+        </div>
+      </div>
+    </div>
+  </div>
   </body>
 </html>
