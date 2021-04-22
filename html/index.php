@@ -132,7 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
           <div class="posts_footer">
           <p class="posts_date"><? echo  convert_to_fuzzy_time($posts[$i]["date"]);?></p>
           </div>
-          <a class ="link" href="/p?p=<?echo $posts[$i]["postid"]?>"></a>
+          <a class ="link" href="/p?id=<?echo $posts[$i]["postid"]?>"></a>
       </div>
     <?php endfor; ?>
   <!-- Modal -->

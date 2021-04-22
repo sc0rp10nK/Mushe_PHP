@@ -1,20 +1,32 @@
 <?php
 // セッション開始
-@session_start(); ?>
+@session_start();
+require_once "../api/function.php";
+$db = getDb();
+$postid = h($_GET["id"]);
+$sql =
+    "SELECT COUNT(*) AS cnt FROM POSTS WHERE date IS NOT NULL AND postid = :id;";
+$sth = $db->prepare($sql);
+$sth->bindParam(":id", $postid);
+$sth->execute();
+$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+if ($result[0]["cnt"] > 0) {
+    $sql =
+        "SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL AND postid = :id;";
+    $sth = $db->prepare($sql);
+    $sth->bindParam(":id", $postid);
+    $sth->execute();
+    $posts = $sth->fetchAll(PDO::FETCH_ASSOC);
+    define("title", "Mushe");
+    include "../global_menu.php";
+} else {
+    http_response_code(404);
+    include "../error/404.php";
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="ja">
-  <?php
-  define("title", "Mushe");
-  include "../global_menu.php";
-  $postid = h($_GET["p"]);
-  // bindParamを利用したSQL文の実行
-  $sql =
-      "SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL AND postid = :id;";
-  $sth = $db->prepare($sql);
-  $sth->bindParam(":id", $postid);
-  $sth->execute();
-  $posts = $sth->fetchAll(PDO::FETCH_ASSOC);
-  ?>
   <body>
   <div class="main">
       <div class="content">

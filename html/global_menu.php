@@ -21,6 +21,7 @@ if (isset($_SESSION["username"])) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.js" integrity="sha512-OmBbzhZ6lgh87tQFDVBHtwfi6MS9raGmNvUNTjDIBb/cgv707v9OuBVpsN6tVVTLOehRFns+o14Nd0/If0lE/A==" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="style.css">
 <script src="script.js"></script>
+<link rel="stylesheet" href="/menu_style.css">
   <title><?php echo title; ?></title>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">

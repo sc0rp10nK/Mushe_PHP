@@ -33,14 +33,14 @@ body {
   margin-bottom: 15px;
   background: #fff;
   -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
-          box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
   padding: 30px;
 }
 
 .post_container .form-control {
   min-height: 100px;
   -webkit-box-shadow: none !important;
-          box-shadow: none !important;
+  box-shadow: none !important;
   border: transparent;
   display: -webkit-box;
   display: -webkit-flex;
@@ -59,7 +59,9 @@ body {
   background-color: transparent;
   font-size: 1em;
   line-height: 25px;
-  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
+    "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック",
+    "MS PGothic", sans-serif;
 }
 
 .post_container .post_button:focus {
@@ -76,7 +78,9 @@ body {
   border: none;
   font-size: 13px;
   line-height: 25px;
-  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
+    "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック",
+    "MS PGothic", sans-serif;
 }
 
 .text-primary a:hover {
@@ -90,9 +94,9 @@ body {
   color: #7a7a7a;
   border-radius: 10px;
   margin-bottom: 15px;
-  background: #f1f2f6;
+  background: white;
   -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
-          box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
   padding: 30px;
   position: relative;
 }
@@ -118,8 +122,8 @@ body {
   display: flex;
   -webkit-box-pack: center;
   -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   position: relative;
   z-index: 1;
 }
@@ -142,14 +146,18 @@ body {
   font-weight: bolder;
   font-size: 20px;
   line-height: 30px;
-  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
+    "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック",
+    "MS PGothic", sans-serif;
   display: inline;
 }
 
 .posts_container .post_user_box .post_user_name_block #post_user_id {
   font-weight: bolder;
   font-size: 12px;
-  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
+    "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック",
+    "MS PGothic", sans-serif;
   text-align: left;
 }
 
@@ -164,10 +172,15 @@ body {
   background-color: transparent;
   font-size: 1em;
   line-height: 25px;
-  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
+    "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック",
+    "MS PGothic", sans-serif;
 }
 
-.posts_container .post_user_box .post_user_followbtn_block .post_follow_button:focus {
+.posts_container
+  .post_user_box
+  .post_user_followbtn_block
+  .post_follow_button:focus {
   outline: 0;
   color: rgba(85, 239, 196, 0.6);
 }
@@ -233,7 +246,7 @@ body {
   border-radius: 9px;
   border-color: #e5e5e5;
   -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .navbar .dropdown-menu li a {
@@ -243,7 +256,8 @@ body {
   text-decoration: none;
 }
 
-.navbar .dropdown-menu li a:hover, .navbar .dropdown-menu li a:active {
+.navbar .dropdown-menu li a:hover,
+.navbar .dropdown-menu li a:active {
   color: #333;
   text-decoration: none;
 }
