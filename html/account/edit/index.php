@@ -5,7 +5,7 @@ require_once "../../api/function.php";
 require_logined_session();
 $db = getDb();
 //ログインユーザーの情報取得
-$user = getUser($db);
+$user = getLoginUser($db);
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (
         isset($_POST["type"]) &&
