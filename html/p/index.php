@@ -32,12 +32,16 @@ if ($result[0]["cnt"] > 0) {
       <div class="content">
         <div class="main_box">
           <div class="post_user_box">
+          <a class ="profile_link" href="/profile/?id=<?echo $posts[0]["userid"]?>">
             <div class="post_user_icon_block">
               <img src="/actions/image.php?id=<?echo h($posts[0]["userid"]);?>" id="post_user_icon" />
             </div>
+            </a>
+            <a class ="profile_link" href="/profile/?id=<?echo $posts[0]["userid"]?>">
             <div class="post_user_name_block">
               <p name="post_user_name" id="post_user_name"><?echo h($posts[0]["name"])?></p>
             </div>
+            </a>
             <?php if (
                 isset($_SESSION["username"]) &&
                 $_SESSION["username"] != "GUEST" &&

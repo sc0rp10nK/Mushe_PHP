@@ -22,14 +22,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sth = $db->prepare($sql);
                 $sth->bindParam(":id", $username);
                 $sth->execute();
-                $result = $sth->fetchAll(PDO::FETCH_ASSOC);
-                if ($result[0]["cnt"] > 0) {
+                $result = $sth->fetch();
+                if ($result["cnt"] > 0) {
                     $name = $_FILES["image"]["name"];
                     $type = $_FILES["image"]["type"];
                     $content = file_get_contents($_FILES["image"]["tmp_name"]);
-                    $size = $_FILES["image"]["size"];
                     $sql =
-                        "UPDATE USER_PROFILE_IMAGES SET image_name = :image_name , image_type = :image_type, image_content = :image_content, image_size = :image_size, created_at = now() WHERE image_userid = :image_userid; ";
+                        "UPDATE USER_PROFILE_IMAGES SET image_name = :image_name , image_type = :image_type, image_content = :image_content, created_at = now() WHERE image_userid = :image_userid; ";
                     $stmt = $db->prepare($sql);
                     $stmt->bindValue(":image_name", $name, PDO::PARAM_STR);
                     $stmt->bindValue(":image_type", $type, PDO::PARAM_STR);
@@ -38,7 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $content,
                         PDO::PARAM_STR
                     );
-                    $stmt->bindValue(":image_size", $size, PDO::PARAM_INT);
                     $stmt->bindValue(
                         ":image_userid",
                         $username,
@@ -47,34 +45,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->execute();
                     $msgEnable = true;
                     $msg = "プロフィールの変更しました。";
-                } else {
-                    if (isset($_FILES["image"]["name"])) {
-                        $name = $_FILES["image"]["name"];
-                        $type = $_FILES["image"]["type"];
-                        $content = file_get_contents(
-                            $_FILES["image"]["tmp_name"]
-                        );
-                        $size = $_FILES["image"]["size"];
-                        $sql = 'INSERT INTO USER_PROFILE_IMAGES(image_name, image_type, image_content, image_size, created_at,image_userid)
-                                        VALUES (:image_name, :image_type, :image_content, :image_size, now(),:image_userid)';
-                        $stmt = $db->prepare($sql);
-                        $stmt->bindValue(":image_name", $name, PDO::PARAM_STR);
-                        $stmt->bindValue(":image_type", $type, PDO::PARAM_STR);
-                        $stmt->bindValue(
-                            ":image_content",
-                            $content,
-                            PDO::PARAM_STR
-                        );
-                        $stmt->bindValue(":image_size", $size, PDO::PARAM_INT);
-                        $stmt->bindValue(
-                            ":image_userid",
-                            $username,
-                            PDO::PARAM_STR
-                        );
-                        $stmt->execute();
-                        $msgEnable = true;
-                        $msg = "プロフィールの変更しました。";
-                    }
                 }
             } elseif (isset($_POST["name"])) {
                 $name = $_POST["name"];

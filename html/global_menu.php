@@ -4,7 +4,7 @@ require_once "api/function.php";
 $db = getDb();
 if (isset($_SESSION["username"])) {
     //ログインユーザーの情報取得
-    $user = getUser($db);
+    $user = getLoginUser($db);
 }
 ?>
 <head>
@@ -37,7 +37,7 @@ if (isset($_SESSION["username"])) {
         </a>
         <!-- この下の行に dropdown-menu-right を追加するだけ。 -->
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="#"><i class="fa fa-user-o"></i> プロフィール</a>
+        <a class="dropdown-item" href="/profile/?id=<?echo $_SESSION["username"]?>"><i class="fa fa-user-o"></i> プロフィール</a>
         <a class="dropdown-item" href="/account/edit"><i class="fa fa-cog" aria-hidden="true"></i> プロフィール編集</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="/account/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> ログアウト</a>

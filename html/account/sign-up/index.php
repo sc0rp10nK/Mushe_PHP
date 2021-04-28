@@ -28,9 +28,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 password_hash($pass, PASSWORD_DEFAULT)
             );
             $prepare->bindValue(':name', $name);
+
             $prepare->execute();
+            $name = basename("img.png");
+            $type = getimagesize("img.png")[2];
+            $content = file_get_contents("img.png");
+            $sql = 'INSERT INTO USER_PROFILE_IMAGES(image_name, image_type, image_content, created_at,image_userid)
+                            VALUES (:image_name, :image_type, :image_content, now(),:image_userid)';
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(":image_name", $name, PDO::PARAM_STR);
+            $stmt->bindValue(":image_type", $type, PDO::PARAM_STR);
+            $stmt->bindValue(
+                ":image_content",
+                $content,
+                PDO::PARAM_STR
+            );
+            $stmt->bindValue(
+                ":image_userid",
+                $userid,
+                PDO::PARAM_STR
+            );
+            $stmt->execute();
             header('Location: /account/login');
         } catch (PDOException $e) {
+            print $e;
             $errmsg = 'アカウントが既に存在がします';
         } catch(Exception $e){
             $errmsg = $e->getMessage();

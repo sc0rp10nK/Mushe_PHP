@@ -38,7 +38,7 @@
 }
 
 .content .main_box .post_user_box {
-  height: 20%;
+  height: 15%;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -89,6 +89,15 @@
 .content .main_box .post_user_box .post_user_followbtn_block .post_follow_button:focus {
   outline: 0;
   color: rgba(85, 239, 196, 0.6);
+}
+
+.content .main_box .profile_link {
+  text-decoration: none;
+  color: #7a7a7a;
+}
+
+.content .main_box .profile_link:hover {
+  opacity: 0.8;
 }
 
 .content .main_box .post_img_box {

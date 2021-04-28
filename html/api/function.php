@@ -76,13 +76,23 @@ function getDb()
         $db = null;
     }
 }
-function getUser($db)
+function getLoginUser($db)
 {
     $username = $_SESSION["username"];
     // bindParamを利用したSQL文の実行
     $sql = "SELECT * FROM USERS WHERE userid = :id;";
     $sth = $db->prepare($sql);
     $sth->bindParam(":id", $username);
+    $sth->execute();
+    $user = $sth->fetch();
+    return $user;
+}
+function getUser($db,$userid)
+{
+    // bindParamを利用したSQL文の実行
+    $sql = "SELECT * FROM USERS WHERE userid = :id;";
+    $sth = $db->prepare($sql);
+    $sth->bindParam(":id", $userid);
     $sth->execute();
     $user = $sth->fetch();
     return $user;

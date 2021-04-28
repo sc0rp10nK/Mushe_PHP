@@ -104,13 +104,17 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
       </form>
       <?php endif;?>
           <div class="post_user_box">
-                <div class="post_user_icon_block">
-                  <img src="/actions/image.php?id=<?echo h($posts[$i]["userid"]);?>" id="post_user_icon" />
-                </div>
-                <div class="post_user_name_block">
-                  <p name="post_user_name" id="post_user_name"><?echo h($posts[$i]["name"]);?></p>
-                  <p name="post_user_id" id="post_user_id">@<?echo h($posts[$i]["userid"]);?></p>
-                </div>
+                <a class ="profile_link" href="/profile/?id=<?echo $posts[$i]["userid"]?>">
+                  <div class="post_user_icon_block">
+                    <img src="/actions/image.php?id=<?echo h($posts[$i]["userid"]);?>" id="post_user_icon" />
+                  </div>
+                  </a>
+                <a class ="profile_link" href="/profile/?id=<?echo $posts[$i]["userid"]?>">
+                  <div class="post_user_name_block">
+                    <p name="post_user_name" id="post_user_name"><?echo h($posts[$i]["name"]);?></p>
+                    <p name="post_user_id" id="post_user_id">@<?echo h($posts[$i]["userid"]);?></p>
+                  </div>
+                  </a>
                 <?php if (
                     isset($_SESSION["username"]) &&
                     $_SESSION["username"] != "GUEST" &&
