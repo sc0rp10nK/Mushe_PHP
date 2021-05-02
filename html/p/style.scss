@@ -72,6 +72,30 @@
             color: rgba($color: #55efc4, $alpha: 0.6);
           }
         }
+        .post_followed_button {
+          margin-top: 32px;
+          margin-left: 30px;
+          border: none;
+          display: inline-block;
+          font-weight: bold;
+          text-decoration: none;
+          color: #546de5;
+          background-color: transparent;
+          font-size: 1em;
+          line-height: 25px;
+          font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
+            "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック",
+            "MS PGothic", sans-serif;
+          &:hover {
+            transform: scale(1.1);
+            color: #c44569;
+            content: "フォロー解除";
+          }
+          &:focus {
+            outline: 0;
+            color: rgba($color: #55efc4, $alpha: 0.6);
+          }
+        }
       }
     }
     .profile_link {

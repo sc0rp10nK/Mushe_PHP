@@ -8,9 +8,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $username = $_SESSION["username"];
         // bindParamを利用したSQL文の実行
         $sql =
-            "SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL AND userid = :id ORDER BY date DESC;";
+            "SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid JOIN FOLLOWS ON FOLLOWS.follower_userid = USERS.userid WHERE date IS NOT NULL AND followed_userid = :userid UNION SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid JOIN FOLLOWS ON FOLLOWS.follower_userid = USERS.userid WHERE date IS NOT NULL AND userid = :userid ORDER BY date DESC";
         $sth = $db->prepare($sql);
-        $sth->bindParam(":id", $username);
+        $sth->bindParam(":userid", $username);
         $sth->execute();
         $posts = $sth->fetchAll(PDO::FETCH_ASSOC);
     } else {
@@ -62,9 +62,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
  <?php if (isset($_SESSION["username"]) && $_SESSION["username"] != "GUEST"): ?>
     <div class="post_container">
            <?php if (
-              isset($_SESSION["username"]) &&
-              $_SESSION["username"] != "GUEST"
-          ): ?>
+               isset($_SESSION["username"]) &&
+               $_SESSION["username"] != "GUEST"
+           ): ?>
             <form action="" method="post" name="post">
               <input
               type="hidden"
@@ -90,10 +90,10 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     <?php for ($i = 0; $i < count($posts); $i++): ?>
       <div class="posts_container">
       <?php if (
-                isset($_SESSION["username"]) &&
-                $_SESSION["username"] != "GUEST" &&
-                $posts[$i]["userid"] == $_SESSION["username"]
-            ): ?>
+          isset($_SESSION["username"]) &&
+          $_SESSION["username"] != "GUEST" &&
+          $posts[$i]["userid"] == $_SESSION["username"]
+      ): ?>
       <form id="delete" action="actions/delete.php" method="post">
         <a id="post_delete" data-toggle="modal" data-target="#exampleModal" ><i class="fa fa-times" aria-hidden="true"></i></a>
         <input
@@ -102,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             value="<?echo $posts[$i]["postid"]?>"
         />
       </form>
-      <?php endif;?>
+      <?php endif; ?>
           <div class="post_user_box">
                 <a class ="profile_link" href="/profile/?id=<?echo $posts[$i]["userid"]?>">
                   <div class="post_user_icon_block">
@@ -120,14 +120,32 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                     $_SESSION["username"] != "GUEST" &&
                     $posts[$i]["userid"] != $_SESSION["username"]
                 ): ?>
-                <div class="post_user_followbtn_block">
-                  <input
-                    class="post_follow_button"
-                    id="post_follow_button"
-                    type="button"
-                    value="フォローする"
-                  />
-                </div>
+<form class="post_user_followbtn_block" action="/actions/follow.php" method="post">
+              <input
+              type="hidden"
+              name="token"
+              value="<?= h(generate_token()) ?>"
+              />
+              <input type="hidden" name="followid" value=<?echo $posts[$i]['userid']?>>
+              <?php if (
+                  isFollowed($db, $posts[$i]["userid"], $_SESSION["username"])
+              ): ?>
+                <input
+                      class="post_followed_button"
+                      id="post_followed_button"
+                      type="submit"
+                      onMouseOver="this.value='フォロー解除';" onMouseOut="this.value='フォロー中';"
+                      value="フォロー中"
+                      />
+              <?php else: ?>
+                <input
+                      class="post_follow_button"
+                      id="post_follow_button"
+                      type="submit"
+                      value="フォローする"
+                      />
+              <?php endif; ?>
+          </form>
                 <?php endif; ?>
           </div>
           <div class="posts_body">

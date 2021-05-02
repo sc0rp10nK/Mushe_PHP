@@ -163,7 +163,6 @@ body {
 }
 
 .posts_container .post_user_box .post_user_followbtn_block .post_follow_button {
-  margin-top: 10px;
   margin-left: 30px;
   border: none;
   display: inline-block;
@@ -173,10 +172,37 @@ body {
   background-color: transparent;
   font-size: 1em;
   line-height: 25px;
+  padding: 10px;
   font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
 }
 
 .posts_container .post_user_box .post_user_followbtn_block .post_follow_button:focus {
+  outline: 0;
+  color: rgba(85, 239, 196, 0.6);
+}
+
+.posts_container .post_user_box .post_user_followbtn_block .post_followed_button {
+  margin-left: 30px;
+  border: none;
+  display: inline-block;
+  font-weight: bold;
+  text-decoration: none;
+  color: #546de5;
+  background-color: transparent;
+  font-size: 1em;
+  line-height: 25px;
+  padding: 10px;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+.posts_container .post_user_box .post_user_followbtn_block .post_followed_button:hover {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+  color: #c44569;
+  content: "フォロー解除";
+}
+
+.posts_container .post_user_box .post_user_followbtn_block .post_followed_button:focus {
   outline: 0;
   color: rgba(85, 239, 196, 0.6);
 }

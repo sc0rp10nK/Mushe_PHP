@@ -76,6 +76,7 @@ function getDb()
         $db = null;
     }
 }
+//ログインしているユーザー情報
 function getLoginUser($db)
 {
     $username = $_SESSION["username"];
@@ -87,7 +88,8 @@ function getLoginUser($db)
     $user = $sth->fetch();
     return $user;
 }
-function getUser($db,$userid)
+//指定ユーザー情報取得
+function getUser($db, $userid)
 {
     // bindParamを利用したSQL文の実行
     $sql = "SELECT * FROM USERS WHERE userid = :id;";
@@ -96,6 +98,83 @@ function getUser($db,$userid)
     $sth->execute();
     $user = $sth->fetch();
     return $user;
+}
+//フォローしているか
+function isFollowed($db, $follow_Userid, $userid)
+{
+    $sql =
+        "SELECT COUNT(*) AS cnt FROM FOLLOWS WHERE follower_userid = :follow_userid AND followed_userid = :id;";
+    $sth = $db->prepare($sql);
+    $sth->bindParam(":follow_userid", $follow_Userid);
+    $sth->bindParam(":id", $userid);
+    $sth->execute();
+    $result = $sth->fetch();
+    if ($result["cnt"] > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+//フォロー数取得
+function getFollowNum($db, $userid)
+{
+    $sql = "SELECT COUNT(*) AS cnt FROM FOLLOWS WHERE followed_userid = :id;";
+    $sth = $db->prepare($sql);
+    $sth->bindParam(":id", $userid);
+    $sth->execute();
+    $result = $sth->fetch();
+    return thousandsCurrencyFormat($result["cnt"]);
+}
+//フォロワー数取得
+function getFollowerNum($db, $userid)
+{
+    $sql = "SELECT COUNT(*) AS cnt FROM FOLLOWS WHERE follower_userid = :id;";
+    $sth = $db->prepare($sql);
+    $sth->bindParam(":id", $userid);
+    $sth->execute();
+    $result = $sth->fetch();
+    return thousandsCurrencyFormat($result["cnt"]);
+}
+//フォロー取得
+function getFollowUsers($db, $userid)
+{
+    $sql =
+        "SELECT * FROM FOLLOWS JOIN USERS ON follower_userid = USERS.userid WHERE followed_userid = :id";
+    $sth = $db->prepare($sql);
+    $sth->bindParam(":id", $userid);
+    $sth->execute();
+    $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+}
+//フォロワー取得
+function getFollowerUsers($db, $userid)
+{
+    $sql =
+        "SELECT * FROM FOLLOWS JOIN USERS ON followed_userid = USERS.userid WHERE follower_userid = :id";
+    $sth = $db->prepare($sql);
+    $sth->bindParam(":id", $userid);
+    $sth->execute();
+    $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+}
+//数値変換 メートル法
+function thousandsCurrencyFormat($num)
+{
+    if ($num > 1000) {
+        $x = round($num);
+        $x_number_format = number_format($x);
+        $x_array = explode(",", $x_number_format);
+        $x_parts = ["k", "m", "b", "t"];
+        $x_count_parts = count($x_array) - 1;
+        $x_display = $x;
+        $x_display =
+            $x_array[0] .
+            ((int) $x_array[1][0] !== 0 ? "." . $x_array[1][0] : "");
+        $x_display .= $x_parts[$x_count_parts - 1];
+        return $x_display;
+    }
+
+    return $num;
 }
 /**
  * https://gist.github.com/wgkoro/4985763から引用

@@ -47,15 +47,33 @@ if ($result[0]["cnt"] > 0) {
                 $_SESSION["username"] != "GUEST" &&
                 $posts[0]["userid"] != $_SESSION["username"]
             ): ?>
-                <div class="post_user_followbtn_block">
-                  <input
-                    class="post_follow_button"
-                    id="post_follow_button"
-                    type="button"
-                    value="フォローする"
-                  />
-                </div>
-                <?php endif; ?>
+        <form class="post_user_followbtn_block" action="../actions/follow.php" method="post">
+              <input
+              type="hidden"
+              name="token"
+              value="<?= h(generate_token()) ?>"
+              />
+              <input type="hidden" name="followid" value=<?echo $posts[0]["userid"]?>>
+              <?php if (
+                  isFollowed($db, $posts[0]["userid"], $_SESSION["username"])
+              ): ?>
+                <input
+                      class="post_followed_button"
+                      id="post_followed_button"
+                      type="submit"
+                      onMouseOver="this.value='フォロー解除';" onMouseOut="this.value='フォロー中';"
+                      value="フォロー中"
+                      />
+              <?php else: ?>
+                <input
+                      class="post_follow_button"
+                      id="post_follow_button"
+                      type="submit"
+                      value="フォローする"
+                      />
+              <?php endif; ?>
+          </form>
+        <?php endif; ?>
           </div>
           <div class="post_img_box">
             <img src="img/img.jpg" id="post_img" />

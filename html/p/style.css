@@ -91,6 +91,32 @@
   color: rgba(85, 239, 196, 0.6);
 }
 
+.content .main_box .post_user_box .post_user_followbtn_block .post_followed_button {
+  margin-top: 32px;
+  margin-left: 30px;
+  border: none;
+  display: inline-block;
+  font-weight: bold;
+  text-decoration: none;
+  color: #546de5;
+  background-color: transparent;
+  font-size: 1em;
+  line-height: 25px;
+  font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+.content .main_box .post_user_box .post_user_followbtn_block .post_followed_button:hover {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+  color: #c44569;
+  content: "フォロー解除";
+}
+
+.content .main_box .post_user_box .post_user_followbtn_block .post_followed_button:focus {
+  outline: 0;
+  color: rgba(85, 239, 196, 0.6);
+}
+
 .content .main_box .profile_link {
   text-decoration: none;
   color: #7a7a7a;
