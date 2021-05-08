@@ -101,6 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             name="postid"
             value="<?echo $posts[$i]["postid"]?>"
         />
+        <input type="hidden" name="type" value="post">
       </form>
       <?php endif; ?>
           <div class="post_user_box">

@@ -13,6 +13,10 @@
   width: 100%;
 }
 
+p {
+  margin: 0;
+}
+
 .content {
   background: #fff;
   left: 50%;
@@ -272,6 +276,7 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  position: relative;
 }
 
 .content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box .post_comment_user_icon_block {
@@ -314,6 +319,18 @@
   width: auto;
   font-size: 14px;
   font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+.content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box #comment_delete {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  z-index: 1;
+  color: #ff7979;
+}
+
+.content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box #comment_delete:hover {
+  color: #d63031;
 }
 
 @media screen and (max-width: 1000px) {

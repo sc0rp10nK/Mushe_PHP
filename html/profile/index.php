@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $posts = $sth->fetchAll(PDO::FETCH_ASSOC);
     } else {
         http_response_code(404);
-        include "error/404.php";
+        include "../error/404.php";
         exit();
     }
 }

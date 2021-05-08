@@ -9,6 +9,9 @@
   bottom: 0;
   width: 100%;
 }
+p{
+  margin: 0;
+}
 .content {
   background: #fff;
   left: 50%;
@@ -228,6 +231,7 @@
         height: auto;
         .post_comment_user_box {
           display: flex;
+          position: relative;
           .post_comment_user_icon_block {
             height: 60px;
             width: 60px;
@@ -262,6 +266,16 @@
               font-family: "Lato", "Noto Sans JP", "ヒラギノ角ゴ ProN",
                 "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo,
                 "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+            }
+          }
+          #comment_delete {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            z-index: 1;
+            color: #ff7979;
+            &:hover {
+              color: #d63031;
             }
           }
         }

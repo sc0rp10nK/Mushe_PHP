@@ -4,13 +4,14 @@
 require_once "../api/function.php";
 $db = getDb();
 $postid = h($_GET["id"]);
+//投稿情報取得
 $sql =
     "SELECT COUNT(*) AS cnt FROM POSTS WHERE date IS NOT NULL AND postid = :id;";
 $sth = $db->prepare($sql);
 $sth->bindParam(":id", $postid);
 $sth->execute();
-$result = $sth->fetchAll(PDO::FETCH_ASSOC);
-if ($result[0]["cnt"] > 0) {
+$result = $sth->fetch();
+if ($result["cnt"] > 0) {
     $sql =
         "SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL AND postid = :id;";
     $sth = $db->prepare($sql);
@@ -23,6 +24,49 @@ if ($result[0]["cnt"] > 0) {
     http_response_code(404);
     include "../error/404.php";
     exit();
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // ユーザー情報取得
+    if (isset($_SESSION["username"]) && $_SESSION["username"] != "GUEST") {
+        $username = $_SESSION["username"];
+        // bindParamを利用したSQL文の実行
+        $sql = "SELECT * FROM USERS WHERE userid = :id;";
+        $sth = $db->prepare($sql);
+        $sth->bindParam(":id", $username);
+        $sth->execute();
+        $user = $sth->fetch();
+        if (
+            isset($_POST["content"]) &&
+            validate_token(filter_input(INPUT_POST, "token"))
+        ) {
+            $content = $_POST["content"];
+            $date = date("Y/m/d H:i:s");
+            $sql = 'INSERT INTO COMMENTS
+  (content, add_date, date,postid, userid) VALUES (:content, :add_date, :date,:postid, :userid)';
+            $prepare = $db->prepare($sql);
+            $prepare->bindValue(":content", $content, PDO::PARAM_STR);
+            $prepare->bindValue(":add_date", $date);
+            $prepare->bindValue(":date", $date);
+            $prepare->bindValue(":postid", $postid);
+            $prepare->bindValue(":userid", $user["userid"]);
+            $prepare->execute();
+        }
+    }
+}
+//コメント取得
+$sql =
+    "SELECT COUNT(*) AS cnt FROM COMMENTS WHERE date IS NOT NULL AND postid = :id;";
+$sth = $db->prepare($sql);
+$sth->bindParam(":id", $postid);
+$sth->execute();
+$result = $sth->fetch();
+if ($result["cnt"] > 0) {
+    $sql =
+        "SELECT * FROM COMMENTS JOIN USERS ON COMMENTS.userid = USERS.userid WHERE date IS NOT NULL AND COMMENTS.postid = :id;";
+    $sth = $db->prepare($sql);
+    $sth->bindParam(":id", $postid);
+    $sth->execute();
+    $comments = $sth->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 <!DOCTYPE html>
@@ -104,7 +148,12 @@ if ($result[0]["cnt"] > 0) {
               <div class="post_comment_post_user_icon_block">
                 <img src="/actions/image.php?id=<?echo h($user['userid']);?>" id="post_comment_user_icon" />
               </div>
-              <textarea id="post_comment_textbox"></textarea>
+              <textarea id="post_comment_textbox" name="content" required></textarea>
+              <input
+              type="hidden"
+              name="token"
+              value="<?= h(generate_token()) ?>"
+              />
               <input
                 class="post_button"
                 id="post_button"
@@ -116,31 +165,70 @@ if ($result[0]["cnt"] > 0) {
             <?php endif; ?>
           </div>
           <div class="post_comment_box">
-            <div class="post_comment_block">
-              <div class="post_comment_user_box">
-                <div class="post_comment_user_icon_block">
-                  <img src="img/icon2.jpg" id="post_comment_user_icon" />
-                </div>
-                <div class="post_comment_body">
-                  <div class="post_comment_user_name_block">
-                    <p
-                      name="post_comment_user_name"
-                      id="post_comment_user_name"
-                    >
-                      てすと
-                    </p>
-                    <p>&nbsp;&nbsp;</p>
-                    <p class="post_comment_time">1時間前</p>
+            <?php if (is_countable($comments)): ?>
+              <?php for ($i = 0; $i < count($comments); $i++): ?>
+                  <div class="post_comment_block">
+                    <div class="post_comment_user_box">
+                      <div class="post_comment_user_icon_block">
+                        <img src="/actions/image.php?id=<?echo h($comments[$i]["userid"]);?>" id="post_comment_user_icon" />
+                      </div>
+                      <div class="post_comment_body">
+                        <div class="post_comment_user_name_block">
+                          <p
+                            name="post_comment_user_name"
+                            id="post_comment_user_name"
+                          >
+                            <?echo h($comments[$i]["name"]);?>
+                          </p>
+                          <p>&nbsp;&nbsp;</p>
+                          <p class="post_comment_time"><? echo  convert_to_fuzzy_time($comments[$i]["date"]);?> </p>
+                        </div>
+                        <div class="post_comment_main">
+                          <p><?echo h($comments[$i]["content"]);?></p>
+                        </div>
+                      </div>
+                      <?php if (
+                          isset($_SESSION["username"]) &&
+                          $_SESSION["username"] != "GUEST" &&
+                          $posts[$i]["userid"] == $_SESSION["username"]
+                      ): ?>
+                      <form id="delete" action="../actions/delete.php" method="post">
+                        <a id="comment_delete" data-toggle="modal" data-target="#exampleModal" ><i class="fa fa-times" aria-hidden="true"></i></a>
+                        <input
+                            type="hidden"
+                            name="commentid"
+                            value="<?echo $comments[$i]["commentid"]?>"
+                        />
+                        <input type="hidden" name="type" value="comment">
+                      </form>
+                     <?php endif; ?>
+                    </div>
                   </div>
-                  <div class="post_comment_main">
-                    <p>いいですね</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+                <?php endfor; ?>
+          <?php endif; ?>
           </div>
         </div>
       </div>
     </div>
+  <!--コメント削除 Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">コメントを削除しますか？</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      <div class="modal-body">
+        <p>この操作は取り消せません。コメントが削除されます。 </p>
+      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">いいえ</button>
+          <button type="submit" form="delete" class="btn btn-primary">削除する</button>
+        </div>
+      </div>
+    </div>
+  </div>
   </body>
 </html>
