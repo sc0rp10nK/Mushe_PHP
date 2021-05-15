@@ -1,14 +1,18 @@
 <?php
+require_once 'vendor/autoload.php';
 require_once "api/function.php";
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 $db = getDb();
 require_logined_session();
+
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     //投稿取得
     if (isset($_SESSION["username"]) && $_SESSION["username"] != "GUEST") {
         $username = $_SESSION["username"];
         // bindParamを利用したSQL文の実行
         $sql =
-            "SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid JOIN FOLLOWS ON FOLLOWS.follower_userid = USERS.userid WHERE date IS NOT NULL AND followed_userid = :userid UNION SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid JOIN FOLLOWS ON FOLLOWS.follower_userid = USERS.userid WHERE date IS NOT NULL AND userid = :userid ORDER BY date DESC";
+            "SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid JOIN FOLLOWS ON FOLLOWS.follower_userid = USERS.userid WHERE date IS NOT NULL AND followed_userid = :userid UNION SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid JOIN FOLLOWS ON FOLLOWS.followed_userid = USERS.userid WHERE date IS NOT NULL AND userid = :userid ORDER BY date DESC";
         $sth = $db->prepare($sql);
         $sth->bindParam(":userid", $username);
         $sth->execute();
@@ -36,15 +40,57 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             isset($_POST["content"]) &&
             validate_token(filter_input(INPUT_POST, "token"))
         ) {
+          if(isset($_SESSION["access"])){
+            $api = new SpotifyWebAPI\SpotifyWebAPI();
+            $api->setAccessToken($_SESSION['access']);
+            try {
+            if((strpos($_POST["content"],'$なうぷれ') !== false)){
+              $nowplaying = $api -> getMyCurrentTrack();
+              $music_id = $nowplaying->item->id;
+              $content = str_replace('$なうぷれ'."\r\n", '', $_POST["content"]);
+            }elseif((strpos($_POST["content"],'https://open.spotify.com/track/') !== false)){
+              $array = explode("$", $_POST["content"]);
+              $tmp_musicid = str_replace('https://open.spotify.com/track/', '', $array[0]);
+              $music_id = mb_strstr($tmp_musicid , '?si=', true);
+              $music_id = str_replace("\r\n",'',$music_id);
+              $content = $array[1];
+            }else{
+              $music_id = NULL;
+              $content = $_POST["content"];
+            }
+          }catch(SpotifyWebAPI\SpotifyWebAPIException $e) {
+              if ($e->getCode() == 401) {
+                  $session = new SpotifyWebAPI\Session(
+                    $_ENV["ClientID"],
+                    $_ENV["ClientSecret"],
+                    'http://localhost:8080/actions/callback.php'
+                  );
+                  $session->refreshAccessToken($_SESSION['refresh']);
+                  $accessToken = $session->getAccessToken();
+                  $api->setAccessToken($accessToken);
+              } else {
+                  $eMessage = 'Spotify Web API error (code '.$e->getCode().'): '.$e->getMessage()."\n";
+                  $logFile = fopen("log.txt", "a") or die("Log error: unable to open log file.");
+                  fwrite($logFile, $eMessage);
+                  fclose($logFile);
+                  die($eMessage); 
+              }
+          }
+          }elseif((strpos($_POST["content"],'$なうぷれ') !== false) || (strpos($_POST["content"],'https://open.spotify.com/track/') !== false)){
+            header("Location: /Spotify");
+          }else{
+            $music_id = NULL;
             $content = $_POST["content"];
+          }
             $date = date("Y/m/d H:i:s");
             $sql = 'INSERT INTO POSTS
-(content, add_date, date, post_userid) VALUES (:content, :add_date, :date, :post_userid)';
+(content, add_date, date, post_userid,music_id) VALUES (:content, :add_date, :date, :post_userid,:music_id)';
             $prepare = $db->prepare($sql);
             $prepare->bindValue(":content", $content, PDO::PARAM_STR);
             $prepare->bindValue(":add_date", $date);
             $prepare->bindValue(":date", $date);
             $prepare->bindValue(":post_userid", $user["userid"]);
+            $prepare->bindValue(":music_id", $music_id);
             $prepare->execute();
             $uri = $_SERVER["HTTP_REFERER"];
             header("Location: " . $uri);

@@ -93,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
           $_SESSION["username"] != "GUEST" &&
           $posts[$i]["userid"] == $_SESSION["username"]
       ): ?>
-      <form id="delete" action="actions/delete.php" method="post">
+      <form id="delete" action="../actions/delete.php" method="post">
         <a id="post_delete" data-toggle="modal" data-target="#exampleModal" >
           <i class="fa fa-times" aria-hidden="true">
           </i>

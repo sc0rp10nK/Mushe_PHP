@@ -2,6 +2,34 @@
 // セッション開始
 @session_start();
 require_once "../api/function.php";
+require '../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+if(isset($_SESSION["access"])){
+  try {
+  $api = new SpotifyWebAPI\SpotifyWebAPI();
+  $api->setAccessToken($_SESSION['access']);
+  }catch(SpotifyWebAPI\SpotifyWebAPIException $e) {
+    if ($e->getCode() == 401) {
+        $session = new SpotifyWebAPI\Session(
+          $_ENV["ClientID"],
+          $_ENV["ClientSecret"],
+          'http://localhost:8080/actions/callback.php'
+        );
+        $session->refreshAccessToken($_SESSION['refresh']);
+        $accessToken = $session->getAccessToken();
+        $api->setAccessToken($accessToken);
+    } else {
+        $eMessage = 'Spotify Web API error (code '.$e->getCode().'): '.$e->getMessage()."\n";
+        $logFile = fopen("log.txt", "a") or die("Log error: unable to open log file.");
+        fwrite($logFile, $eMessage);
+        fclose($logFile);
+        die($eMessage); 
+    }
+  }
+}else{
+  header("Location: /Spotify");
+}
 $db = getDb();
 $postid = h($_GET["id"]);
 //投稿情報取得
@@ -17,7 +45,10 @@ if ($result["cnt"] > 0) {
     $sth = $db->prepare($sql);
     $sth->bindParam(":id", $postid);
     $sth->execute();
-    $posts = $sth->fetchAll(PDO::FETCH_ASSOC);
+    $posts = $sth->fetch();
+    if(isset($posts["music_id"])){
+      $track = $api->getTrack($posts["music_id"]);
+    }
     define("title", "Mushe");
     include "../global_menu.php";
 } else {
@@ -76,20 +107,20 @@ if ($result["cnt"] > 0) {
       <div class="content">
         <div class="main_box">
           <div class="post_user_box">
-          <a class ="profile_link" href="/profile/?id=<?echo $posts[0]["userid"]?>">
+          <a class ="profile_link" href="/profile/?id=<?echo $posts["userid"]?>">
             <div class="post_user_icon_block">
-              <img src="/actions/image.php?id=<?echo h($posts[0]["userid"]);?>" id="post_user_icon" />
+              <img src="/actions/image.php?id=<?echo h($posts["userid"]);?>" id="post_user_icon" />
             </div>
             </a>
-            <a class ="profile_link" href="/profile/?id=<?echo $posts[0]["userid"]?>">
+            <a class ="profile_link" href="/profile/?id=<?echo $posts["userid"]?>">
             <div class="post_user_name_block">
-              <p name="post_user_name" id="post_user_name"><?echo h($posts[0]["name"])?></p>
+              <p name="post_user_name" id="post_user_name"><?echo h($posts["name"])?></p>
             </div>
             </a>
             <?php if (
                 isset($_SESSION["username"]) &&
                 $_SESSION["username"] != "GUEST" &&
-                $posts[0]["userid"] != $_SESSION["username"]
+                $posts["userid"] != $_SESSION["username"]
             ): ?>
         <form class="post_user_followbtn_block" action="../actions/follow.php" method="post">
               <input
@@ -97,9 +128,9 @@ if ($result["cnt"] > 0) {
               name="token"
               value="<?= h(generate_token()) ?>"
               />
-              <input type="hidden" name="followid" value=<?echo $posts[0]["userid"]?>>
+              <input type="hidden" name="followid" value=<?echo $posts["userid"]?>>
               <?php if (
-                  isFollowed($db, $posts[0]["userid"], $_SESSION["username"])
+                  isFollowed($db, $posts["userid"], $_SESSION["username"])
               ): ?>
                 <input
                       class="post_followed_button"
@@ -120,20 +151,29 @@ if ($result["cnt"] > 0) {
         <?php endif; ?>
           </div>
           <div class="post_img_box">
-            <img src="img/img.jpg" id="post_img" />
+          <?php if (isset($posts["music_id"])): ?>
+              <img src="<?= $track->album->images[0]->url?>" id="post_img" />
+              <a href="<?= $track->external_urls->spotify?>" target="_blank">
+                <div class="mask">
+                  <p class="caption">Open Spotify</p>
+                </div>
+              </a>
+          <?php endif; ?>
           </div>
           <div class="footer">
             <div class="post_footer_menu">
               <div class="posts_date_box">
-                <p class="posts_date"><? echo  convert_to_fuzzy_time($posts[0]["date"]);?></p>
+                <p class="posts_date"><? echo  convert_to_fuzzy_time($posts["date"]);?></p>
               </div>
-              <div class="post_like_box">
-                <i class="fa fa-heart-o"></i>
-              </div>
+              <?php if (isset($posts["music_id"])): ?>
+                <div class="post_music_box">
+                <p> <i class="fa fa-music" aria-hidden="true"></i>&nbsp;&nbsp;<?= $track->artists[0]->name?>&nbsp;&nbsp;-&nbsp;&nbsp;<?= $track->name?></p>
+                </div>
+              <?php endif; ?>
             </div>
             <div class="post_text_box">
               <p>
-              <?echo $posts[0]["content"];?>
+              <?echo $posts["content"];?>
               </p>
             </div>
           </div>
@@ -169,17 +209,21 @@ if ($result["cnt"] > 0) {
               <?php for ($i = 0; $i < count($comments); $i++): ?>
                   <div class="post_comment_block">
                     <div class="post_comment_user_box">
+                    <a class ="profile_link" href="/profile/?id=<?echo $comments[$i]["userid"]?>">
                       <div class="post_comment_user_icon_block">
                         <img src="/actions/image.php?id=<?echo h($comments[$i]["userid"]);?>" id="post_comment_user_icon" />
                       </div>
+                    </a>
                       <div class="post_comment_body">
                         <div class="post_comment_user_name_block">
+                        <a class ="profile_link" href="/profile/?id=<?echo $comments[$i]["userid"]?>">
                           <p
                             name="post_comment_user_name"
                             id="post_comment_user_name"
                           >
                             <?echo h($comments[$i]["name"]);?>
                           </p>
+                          </a>
                           <p>&nbsp;&nbsp;</p>
                           <p class="post_comment_time"><? echo  convert_to_fuzzy_time($comments[$i]["date"]);?> </p>
                         </div>
@@ -190,7 +234,7 @@ if ($result["cnt"] > 0) {
                       <?php if (
                           isset($_SESSION["username"]) &&
                           $_SESSION["username"] != "GUEST" &&
-                          $posts[$i]["userid"] == $_SESSION["username"]
+                          $comments[$i]["userid"] == $_SESSION["username"]
                       ): ?>
                       <form id="delete" action="../actions/delete.php" method="post">
                         <a id="comment_delete" data-toggle="modal" data-target="#exampleModal" ><i class="fa fa-times" aria-hidden="true"></i></a>

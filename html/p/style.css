@@ -25,7 +25,7 @@ p {
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
   width: 1000px;
-  height: 75%;
+  height: 80%;
   -webkit-filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.2));
           filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.2));
   border-radius: 10px;
@@ -42,7 +42,7 @@ p {
 }
 
 .content .main_box .post_user_box {
-  height: 15%;
+  height: 13%;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -131,10 +131,12 @@ p {
 }
 
 .content .main_box .post_img_box {
-  height: 60%;
+  height: 70%;
   width: 100%;
   border-top: solid 1px #cccccc;
   border-bottom: solid 1px #cccccc;
+  overflow: hidden;
+  position: relative;
 }
 
 .content .main_box .post_img_box img {
@@ -143,8 +145,32 @@ p {
   height: 100%;
 }
 
+.content .main_box .post_img_box .caption {
+  text-align: center;
+  padding: 10px;
+  color: #fff;
+  font-size: 15px;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.content .main_box .post_img_box .mask {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0.728);
+  display: table;
+}
+
+.content .main_box .post_img_box .mask:hover {
+  opacity: 1;
+}
+
 .content .main_box .footer {
-  height: 20%;
+  height: 22%;
   display: block;
   width: 100%;
 }
@@ -168,17 +194,16 @@ p {
   margin-left: 4%;
 }
 
-.content .main_box .footer .post_footer_menu .post_like_box {
+.content .main_box .footer .post_footer_menu .post_music_box {
   position: absolute;
-  width: 5em;
   height: 1em;
   left: 0;
   bottom: 0;
   margin-left: 4%;
 }
 
-.content .main_box .footer .post_footer_menu .post_like_box .fa {
-  font-size: 25px;
+.content .main_box .footer .post_footer_menu .post_music_box .fa {
+  font-size: 13px;
   color: #f8a5c2;
 }
 
@@ -331,6 +356,15 @@ p {
 
 .content .post_comment_main .post_comment_box .post_comment_block .post_comment_user_box #comment_delete:hover {
   color: #d63031;
+}
+
+.content .post_comment_main .post_comment_box .profile_link {
+  text-decoration: none;
+  color: #7a7a7a;
+}
+
+.content .post_comment_main .post_comment_box .profile_link:hover {
+  opacity: 0.8;
 }
 
 @media screen and (max-width: 1000px) {
