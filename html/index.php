@@ -10,13 +10,22 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     //投稿取得
     if (isset($_SESSION["username"]) && $_SESSION["username"] != "GUEST") {
         $username = $_SESSION["username"];
-        // bindParamを利用したSQL文の実行
-        $sql =
-            "SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid JOIN FOLLOWS ON FOLLOWS.follower_userid = USERS.userid WHERE date IS NOT NULL AND followed_userid = :userid UNION SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid JOIN FOLLOWS ON FOLLOWS.followed_userid = USERS.userid WHERE date IS NOT NULL AND userid = :userid ORDER BY date DESC";
-        $sth = $db->prepare($sql);
-        $sth->bindParam(":userid", $username);
-        $sth->execute();
-        $posts = $sth->fetchAll(PDO::FETCH_ASSOC);
+        if(0 < getFollowNum($db,$username)){
+          // bindParamを利用したSQL文の実行
+          $sql =
+              "SELECT postid,post_userid,name, content,date,userid,followed_userid FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid JOIN FOLLOWS ON FOLLOWS.follower_userid = USERS.userid WHERE date IS NOT NULL AND followed_userid = :userid
+              UNION SELECT postid,post_userid,name, content, date,userid,followed_userid FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid JOIN FOLLOWS ON FOLLOWS.followed_userid = USERS.userid WHERE date IS NOT NULL AND userid = :userid ORDER BY date DESC";
+          $sth = $db->prepare($sql);
+          $sth->bindParam(":userid", $username);
+          $sth->execute();
+          $posts = $sth->fetchAll(PDO::FETCH_ASSOC);
+        }else{
+          $sql = 'SELECT post_userid,name, content,date,userid FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL AND userid = :userid ORDER BY date DESC;';
+          $sth = $db->prepare($sql);
+          $sth->bindParam(":userid", $username);
+          $sth->execute();
+          $posts = $sth->fetchAll(PDO::FETCH_ASSOC);
+        }
     } else {
         $sql =
             "SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL ORDER BY date DESC;";
@@ -48,6 +57,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
               $nowplaying = $api -> getMyCurrentTrack();
               $music_id = $nowplaying->item->id;
               $content = str_replace('$なうぷれ'."\r\n", '', $_POST["content"]);
+              $content = str_replace('$なうぷれ'."\r", '', $_POST["content"]);
+              $content = str_replace('$なうぷれ', '', $_POST["content"]);
             }elseif((strpos($_POST["content"],'https://open.spotify.com/track/') !== false)){
               $array = explode("$", $_POST["content"]);
               $tmp_musicid = str_replace('https://open.spotify.com/track/', '', $array[0]);
