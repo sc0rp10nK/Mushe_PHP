@@ -18,6 +18,9 @@ if(isset($_SESSION["access"])){
         );
         $session->refreshAccessToken($_SESSION['refresh']);
         $accessToken = $session->getAccessToken();
+        $refreshToken = $session->getRefreshToken();
+        $_SESSION['access'] = $accessToken;
+        $_SESSION['refresh'] = $refreshToken;
         $api->setAccessToken($accessToken);
     } else {
         $eMessage = 'Spotify Web API error (code '.$e->getCode().'): '.$e->getMessage()."\n";

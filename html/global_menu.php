@@ -27,6 +27,14 @@ if (isset($_SESSION["username"])) {
     <div class="container">
       <a class="navbar-brand" href="/">Mushe</a>
       <?php if (
+          isset($_SESSION["username"])
+      ): ?>
+      <form id="form" action="/search" method="get">
+        <input id="sbox"  id="q" name="q" type="text" placeholder="キーワード検索"/>
+        <button type="submit" id="sbtn"><i class="fa fa-search"></i></button>
+      </form>
+      <?php endif; ?>
+      <?php if (
           isset($_SESSION["username"]) &&
           $_SESSION["username"] != "GUEST"
       ): ?>

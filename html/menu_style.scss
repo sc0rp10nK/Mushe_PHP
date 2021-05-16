@@ -1,41 +1,68 @@
-.navbar{
-    .avatar {
-      height: 45px;
-      width: 45px;
-        border-radius: 50%;
-        border: 2px solid #cccccc;
-      margin-right: 10px;
-    }
-    .dropdown-menu i {
-      font-size: 16px;
-      min-width: 10px;
-    }
-  
-    .dropdown.open > a {
-      background: none !important;
-    }
-  
-    .dropdown-menu {
-      border-radius: 9px;
-      border-color: #e5e5e5;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  
-      li a {
-        color: #777;
-        padding: 10px 20px;
-        line-height: normal;
+.navbar {
+  .avatar {
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    border: 2px solid #cccccc;
+    margin-right: 10px;
+  }
+  .dropdown-menu i {
+    font-size: 16px;
+    min-width: 10px;
+  }
+
+  .dropdown.open > a {
+    background: none !important;
+  }
+
+  .dropdown-menu {
+    border-radius: 9px;
+    border-color: #e5e5e5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    li a {
+      color: #777;
+      padding: 10px 20px;
+      line-height: normal;
+      text-decoration: none;
+      &:hover,
+      &:active {
+        color: #333;
         text-decoration: none;
-        &:hover, &:active {
-          color: #333;
-          text-decoration: none;
-        }
       }
-  
-      .material-icons {
-        font-size: 21px;
-        line-height: 16px;
-        vertical-align: middle;
-        margin-top: -2px;
-      }
+    }
+
+    .material-icons {
+      font-size: 21px;
+      line-height: 16px;
+      vertical-align: middle;
+      margin-top: -2px;
     }
   }
+}
+
+#form {
+  position: relative;
+  max-width: 400px;
+}
+#sbox {
+  width: 300px;
+  height: 50px;
+  padding: 0 40px 0 20px;
+  border-radius: 10px;
+  outline: 0;
+  background: white;
+}
+#sbtn {
+  position: absolute;
+  height: 50px;
+  left: 260px; /*アイコン左右の位置調整*/
+  top: 0;
+  background: none;
+  color: #666;
+  border: none;
+  font-size: 20px; /*アイコンサイズ*/
+}
+#sbtn:hover {
+  color: #7fbfff;
+}
