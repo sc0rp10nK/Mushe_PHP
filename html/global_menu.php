@@ -19,16 +19,14 @@ if (isset($_SESSION["username"])) {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css" integrity="sha512-DIW4FkYTOxjCqRt7oS9BFO+nVOwDL4bzukDyDtMO7crjUZhwpyrWBFroq+IqRe6VnJkTpRAS6nhDvf0w+wHmxg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css" integrity="sha512-O03ntXoVqaGUTAeAmvQ2YSzkCvclZEcPQu1eqloPaHfJ5RuNGiS4l+3duaidD801P50J28EHyonCV06CUlTSag==" crossorigin="anonymous" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.js" integrity="sha512-OmBbzhZ6lgh87tQFDVBHtwfi6MS9raGmNvUNTjDIBb/cgv707v9OuBVpsN6tVVTLOehRFns+o14Nd0/If0lE/A==" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="<?php echo path; ?>/style.css">
 <script src="script.js"></script>
 <link rel="stylesheet" href="/menu_style.css">
   <title><?php echo title; ?></title>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="/">Mushe</a>
-      <?php if (
-          isset($_SESSION["username"])
-      ): ?>
+      <?php if (isset($_SESSION["username"])): ?>
       <form id="form" action="/search" method="get">
         <input id="sbox"  id="q" name="q" type="text" placeholder="キーワード検索"/>
         <button type="submit" id="sbtn"><i class="fa fa-search"></i></button>
@@ -45,7 +43,7 @@ if (isset($_SESSION["username"])) {
         </a>
         <!-- この下の行に dropdown-menu-right を追加するだけ。 -->
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="/profile/?id=<?echo $_SESSION["username"]?>"><i class="fa fa-user-o"></i> プロフィール</a>
+        <a class="dropdown-item" href="/<?echo $_SESSION["username"]?>"><i class="fa fa-user-o"></i> プロフィール</a>
         <a class="dropdown-item" href="/account/edit"><i class="fa fa-cog" aria-hidden="true"></i> プロフィール編集</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="/account/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> ログアウト</a>

@@ -242,10 +242,17 @@
   .posts_body {
     padding: 15px;
     text-align: left;
+    margin-bottom: 30px;
   }
   .posts_footer {
     margin: 10px;
     position: relative;
+    .posts_spotify_required{
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      color: #d63031;
+    }
     .posts_date {
       position: absolute;
       right: 0;

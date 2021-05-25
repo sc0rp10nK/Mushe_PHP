@@ -56,48 +56,60 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $msgEnable = true;
                 $msg = "プロフィールの変更しました。";
             }
-        }elseif($_POST["type"] === "pwchg"){
+        } elseif ($_POST["type"] === "pwchg") {
             $username = $_SESSION["username"];
-            if(isset($_POST['oldpassword']) && isset($_POST['password']) && isset($_POST['password-confirmation'])){
-                try{
-                    $oldpass = $_POST['oldpassword'];
-                    $newpass = $_POST['password'];
-                    $newpassConfirm = $_POST['password-confirmation'];
+            if (
+                isset($_POST["oldpassword"]) &&
+                isset($_POST["password"]) &&
+                isset($_POST["password-confirmation"])
+            ) {
+                try {
+                    $oldpass = $_POST["oldpassword"];
+                    $newpass = $_POST["password"];
+                    $newpassConfirm = $_POST["password-confirmation"];
                     $pass_reg_str = "/^(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,50}$/i";
-                    if(!preg_match($pass_reg_str,h($oldpass)) && !preg_match($pass_reg_str,h($newpass)) && !preg_match($pass_reg_str,h($newpassConfirm))){
-                        throw new Exception('変更失敗しました。');
-                    }elseif(!$newpass === $newpassConfirm){
-                        throw new Exception('変更失敗しました。');
+                    if (
+                        !preg_match($pass_reg_str, h($oldpass)) &&
+                        !preg_match($pass_reg_str, h($newpass)) &&
+                        !preg_match($pass_reg_str, h($newpassConfirm))
+                    ) {
+                        throw new Exception("変更失敗しました。");
+                    } elseif (!$newpass === $newpassConfirm) {
+                        throw new Exception("変更失敗しました。");
                     }
                     // データベースへの接続開始
                     $db = getDb();
                     // bindParamを利用したSQL文の実行
-                    $sql = 'SELECT * FROM USERS WHERE userid = :id;';
+                    $sql = "SELECT * FROM USERS WHERE userid = :id;";
                     $sth = $db->prepare($sql);
-                    $sth->bindParam(':id', $username);
+                    $sth->bindParam(":id", $username);
                     $sth->execute();
                     $result = $sth->fetch();
                     //認証処理
                     if (
-                        validate_token(filter_input(INPUT_POST, 'token')) &&
-                        password_verify($oldpass, $result['pwHash'])
-                    ){
-                        $sql = "UPDATE USERS SET pwHash = :pwHash WHERE userid = :userid";
+                        validate_token(filter_input(INPUT_POST, "token")) &&
+                        password_verify($oldpass, $result["pwHash"])
+                    ) {
+                        $sql =
+                            "UPDATE USERS SET pwHash = :pwHash WHERE userid = :userid";
                         $stmt = $db->prepare($sql);
-                        $stmt->bindValue(':pwHash',password_hash($newpass, PASSWORD_DEFAULT));
+                        $stmt->bindValue(
+                            ":pwHash",
+                            password_hash($newpass, PASSWORD_DEFAULT)
+                        );
                         $stmt->bindValue(":userid", $username, PDO::PARAM_STR);
                         $stmt->execute();
                         $msgEnable = true;
                         $msg = "パスワードを変更しました";
-                    }else {
+                    } else {
                         // 認証が失敗したとき
                         // 「403 Forbidden」
                         http_response_code(403);
                     }
                 } catch (PDOException $e) {
-                    $errmsg = '変更失敗しました。';
+                    $errmsg = "変更失敗しました。";
                     $msgEnable = true;
-                } catch(Exception $e){
+                } catch (Exception $e) {
                     $errmsg = $e->getMessage();
                     $msgEnable = true;
                 }
@@ -110,10 +122,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="ja">
 <?php
 define("title", "Mushe");
+define("path", "/account/edit");
 include "../../global_menu.php";
-if(!empty($msg) && $msgEnable){
+if (!empty($msg) && $msgEnable) {
     print "<script>iziToast.success({ title: 'SUCCESS', message: '{$msg}',position: 'topRight' });</script>";
-}elseif(!empty($errmsg) && $msgEnable){
+} elseif (!empty($errmsg) && $msgEnable) {
     print "<script>iziToast.error({ title: 'ERROR', message: '{$errmsg}',position: 'topRight' });</script>";
 }
 ?>

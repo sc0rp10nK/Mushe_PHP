@@ -14,8 +14,8 @@ session_destroy();
 </style>
 <html>
   <?php
-  define('title', 'ログアウト');
-  include '../../global_menu.php';
+  define("title", "ログアウト");
+  include "../../global_menu.php";
   ?>
   <body>
       <div class="mx-auto" style="height:100vh;">

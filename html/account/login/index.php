@@ -1,44 +1,44 @@
 <?php
-require_once '../../api/function.php';
+require_once "../../api/function.php";
 @session_start();
-if($_SESSION['username'] === "GUEST"){
+if ($_SESSION["username"] === "GUEST") {
     $_SESSION = [];
     session_destroy();
-}else{
+} else {
     require_unlogined_session();
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // ユーザから受け取ったユーザ名とパスワード
-    $username = h(filter_input(INPUT_POST, 'username'));
-    $password = h(filter_input(INPUT_POST, 'password'));
+    $username = h(filter_input(INPUT_POST, "username"));
+    $password = h(filter_input(INPUT_POST, "password"));
     try {
         // データベースへの接続開始
         $db = getDb();
         // bindParamを利用したSQL文の実行
-        $sql = 'SELECT * FROM USERS WHERE userid = :id;';
+        $sql = "SELECT * FROM USERS WHERE userid = :id;";
         $sth = $db->prepare($sql);
-        $sth->bindParam(':id', $username);
+        $sth->bindParam(":id", $username);
         $sth->execute();
         $result = $sth->fetch();
         //認証処理
         if (
-            validate_token(filter_input(INPUT_POST, 'token')) &&
-            password_verify($password, $result['pwHash'])
+            validate_token(filter_input(INPUT_POST, "token")) &&
+            password_verify($password, $result["pwHash"])
         ) {
             // 認証が成功したとき
             // セッションIDの追跡を防ぐ
             session_regenerate_id(true);
             // ユーザ名をセット
-            $_SESSION['username'] = $username;
+            $_SESSION["username"] = $username;
             // ログイン完了後に / に遷移
-            header('Location: /');
+            header("Location: /");
             exit();
         } else {
             // 認証が失敗したとき
             // 「403 Forbidden」
             http_response_code(403);
         }
-    // データベースへの接続に失敗した場合
+        // データベースへの接続に失敗した場合
     } catch (PDOException $e) {
         die();
     }
@@ -47,8 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="ja">
   <?php
-  define('title', 'ログイン');
-  include '../../global_menu.php';
+  define("title", "ログイン");
+  define("path", "/account/login");
+  include "../../global_menu.php";
   ?>
 <body>
 <div class="login-form">

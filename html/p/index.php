@@ -2,66 +2,79 @@
 // セッション開始
 @session_start();
 require_once "../api/function.php";
-require '../vendor/autoload.php';
+require "../vendor/autoload.php";
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
-if(isset($_SESSION["access"])){
-  try {
-  $api = new SpotifyWebAPI\SpotifyWebAPI();
-  $api->setAccessToken($_SESSION['access']);
-  }catch(SpotifyWebAPI\SpotifyWebAPIException $e) {
-    if ($e->getCode() == 401) {
-        $session = new SpotifyWebAPI\Session(
-          $_ENV["ClientID"],
-          $_ENV["ClientSecret"],
-          'http://localhost:8080/actions/callback.php'
-        );
-        $session->refreshAccessToken($_SESSION['refresh']);
-        $accessToken = $session->getAccessToken();
-        $refreshToken = $session->getRefreshToken();
-        $_SESSION['access'] = $accessToken;
-        $_SESSION['refresh'] = $refreshToken;
-        $api->setAccessToken($accessToken);
-    } else {
-        $eMessage = 'Spotify Web API error (code '.$e->getCode().'): '.$e->getMessage()."\n";
-        $logFile = fopen("log.txt", "a") or die("Log error: unable to open log file.");
-        fwrite($logFile, $eMessage);
-        fclose($logFile);
-        die($eMessage); 
-    }
-  }
-}else{
-  header("Location: /Spotify");
-}
 $db = getDb();
 $postid = h($_GET["id"]);
-//投稿情報取得
-$sql =
-    "SELECT COUNT(*) AS cnt FROM POSTS WHERE date IS NOT NULL AND postid = :id;";
-$sth = $db->prepare($sql);
-$sth->bindParam(":id", $postid);
-$sth->execute();
-$result = $sth->fetch();
-if ($result["cnt"] > 0) {
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
+    //投稿情報取得
     $sql =
-        "SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL AND postid = :id;";
+        "SELECT COUNT(*) AS cnt FROM POSTS WHERE date IS NOT NULL AND postid = :id;";
     $sth = $db->prepare($sql);
     $sth->bindParam(":id", $postid);
     $sth->execute();
-    $posts = $sth->fetch();
-    if(isset($posts["music_id"])){
-      $track = $api->getTrack($posts["music_id"]);
+    $result = $sth->fetch();
+    if ($result["cnt"] > 0) {
+        $sql =
+            "SELECT * FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL AND postid = :id;";
+        $sth = $db->prepare($sql);
+        $sth->bindParam(":id", $postid);
+        $sth->execute();
+        $posts = $sth->fetch();
+        if (isset($posts["music_id"])) {
+            try {
+                if (isset($_SESSION["access"])) {
+                    $api = new SpotifyWebAPI\SpotifyWebAPI();
+                    $api->setAccessToken($_SESSION["access"]);
+                } else {
+                    header("Location: /actions/callback.php");
+                }
+                $track = $api->getTrack($posts["music_id"]);
+            } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
+                print $e->getcode();
+                if ($e->hasExpiredToken()) {
+                    $session = new SpotifyWebAPI\Session(
+                        $_ENV["ClientID"],
+                        $_ENV["ClientSecret"],
+                        "http://localhost:8080/actions/callback.php"
+                    );
+                    $session->refreshAccessToken($_SESSION["refresh"]);
+                    $_SESSION["access"] = $session->getAccessToken();
+                    $_SESSION["refresh"] = $session->getRefreshToken();
+                    $api = new SpotifyWebAPI\SpotifyWebAPI();
+                    $api->setAccessToken($_SESSION["access"]);
+                    $track = $api->getTrack($posts["music_id"]);
+                }
+            }
+        }
+        define("title", "Mushe");
+        define("path", "/p");
+        include "../global_menu.php";
+    } else {
+        http_response_code(404);
+        include "../error/404.php";
+        exit();
     }
-    define("title", "Mushe");
-    include "../global_menu.php";
-} else {
-    http_response_code(404);
-    include "../error/404.php";
-    exit();
-}
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // ユーザー情報取得
+    //コメント取得
+    $sql =
+        "SELECT COUNT(*) AS cnt FROM COMMENTS WHERE date IS NOT NULL AND postid = :id;";
+    $sth = $db->prepare($sql);
+    $sth->bindParam(":id", $postid);
+    $sth->execute();
+    $result = $sth->fetch();
+    if ($result["cnt"] > 0) {
+        $sql =
+            "SELECT * FROM COMMENTS JOIN USERS ON COMMENTS.userid = USERS.userid WHERE date IS NOT NULL AND COMMENTS.postid = :id;";
+        $sth = $db->prepare($sql);
+        $sth->bindParam(":id", $postid);
+        $sth->execute();
+        $comments = $sth->fetchAll(PDO::FETCH_ASSOC);
+    }
+} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_SESSION["username"]) && $_SESSION["username"] != "GUEST") {
+        //コメントを投稿
+        // ユーザー情報取得
         $username = $_SESSION["username"];
         // bindParamを利用したSQL文の実行
         $sql = "SELECT * FROM USERS WHERE userid = :id;";
@@ -84,23 +97,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $prepare->bindValue(":postid", $postid);
             $prepare->bindValue(":userid", $user["userid"]);
             $prepare->execute();
+            $uri = $_SERVER["HTTP_REFERER"];
+            header("Location: " . $uri);
         }
     }
-}
-//コメント取得
-$sql =
-    "SELECT COUNT(*) AS cnt FROM COMMENTS WHERE date IS NOT NULL AND postid = :id;";
-$sth = $db->prepare($sql);
-$sth->bindParam(":id", $postid);
-$sth->execute();
-$result = $sth->fetch();
-if ($result["cnt"] > 0) {
-    $sql =
-        "SELECT * FROM COMMENTS JOIN USERS ON COMMENTS.userid = USERS.userid WHERE date IS NOT NULL AND COMMENTS.postid = :id;";
-    $sth = $db->prepare($sql);
-    $sth->bindParam(":id", $postid);
-    $sth->execute();
-    $comments = $sth->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 <!DOCTYPE html>
@@ -110,12 +110,12 @@ if ($result["cnt"] > 0) {
       <div class="content">
         <div class="main_box">
           <div class="post_user_box">
-          <a class ="profile_link" href="/profile/?id=<?echo $posts["userid"]?>">
+          <a class ="profile_link" href="/<?echo h($posts["userid"]);?>">
             <div class="post_user_icon_block">
               <img src="/actions/image.php?id=<?echo h($posts["userid"]);?>" id="post_user_icon" />
             </div>
             </a>
-            <a class ="profile_link" href="/profile/?id=<?echo $posts["userid"]?>">
+            <a class ="profile_link" href="/<?echo h($posts["userid"]);?>">
             <div class="post_user_name_block">
               <p name="post_user_name" id="post_user_name"><?echo h($posts["name"])?></p>
             </div>
@@ -131,7 +131,7 @@ if ($result["cnt"] > 0) {
               name="token"
               value="<?= h(generate_token()) ?>"
               />
-              <input type="hidden" name="followid" value=<?echo $posts["userid"]?>>
+              <input type="hidden" name="followid" value=<?echo h($posts["userid"]);?>>
               <?php if (
                   isFollowed($db, $posts["userid"], $_SESSION["username"])
               ): ?>
@@ -155,8 +155,8 @@ if ($result["cnt"] > 0) {
           </div>
           <div class="post_img_box">
           <?php if (isset($posts["music_id"])): ?>
-              <img src="<?= $track->album->images[0]->url?>" id="post_img" />
-              <a href="<?= $track->external_urls->spotify?>" target="_blank">
+              <img src="<?= $track->album->images[0]->url ?>" id="post_img" />
+              <a href="<?= $track->external_urls->spotify ?>" target="_blank">
                 <div class="mask">
                   <p class="caption">Open Spotify</p>
                 </div>
@@ -166,17 +166,19 @@ if ($result["cnt"] > 0) {
           <div class="footer">
             <div class="post_footer_menu">
               <div class="posts_date_box">
-                <p class="posts_date"><? echo  convert_to_fuzzy_time($posts["date"]);?></p>
+                <p class="posts_date"><? echo  h(convert_to_fuzzy_time($posts["date"]));?></p>
               </div>
               <?php if (isset($posts["music_id"])): ?>
                 <div class="post_music_box">
-                <p> <i class="fa fa-music" aria-hidden="true"></i>&nbsp;&nbsp;<?= $track->artists[0]->name?>&nbsp;&nbsp;-&nbsp;&nbsp;<?= $track->name?></p>
+                <p> <i class="fa fa-music" aria-hidden="true"></i>&nbsp;&nbsp;<?= $track
+                    ->artists[0]
+                    ->name ?>&nbsp;&nbsp;-&nbsp;&nbsp;<?= $track->name ?></p>
                 </div>
               <?php endif; ?>
             </div>
             <div class="post_text_box">
               <p>
-              <?echo $posts["content"];?>
+              <p><?echo wordwrap(nl2br(h($posts["content"])), 36, "\n", true);?></p>
               </p>
             </div>
           </div>
@@ -212,14 +214,14 @@ if ($result["cnt"] > 0) {
               <?php for ($i = 0; $i < count($comments); $i++): ?>
                   <div class="post_comment_block">
                     <div class="post_comment_user_box">
-                    <a class ="profile_link" href="/profile/?id=<?echo $comments[$i]["userid"]?>">
+                    <a class ="profile_link" href="/<?echo $comments[$i]["userid"]?>">
                       <div class="post_comment_user_icon_block">
                         <img src="/actions/image.php?id=<?echo h($comments[$i]["userid"]);?>" id="post_comment_user_icon" />
                       </div>
                     </a>
                       <div class="post_comment_body">
                         <div class="post_comment_user_name_block">
-                        <a class ="profile_link" href="/profile/?id=<?echo $comments[$i]["userid"]?>">
+                        <a class ="profile_link" href="/<?echo h($comments[$i]["userid"]);?>">
                           <p
                             name="post_comment_user_name"
                             id="post_comment_user_name"
@@ -228,10 +230,10 @@ if ($result["cnt"] > 0) {
                           </p>
                           </a>
                           <p>&nbsp;&nbsp;</p>
-                          <p class="post_comment_time"><? echo  convert_to_fuzzy_time($comments[$i]["date"]);?> </p>
+                          <p class="post_comment_time"><? echo  h(convert_to_fuzzy_time($comments[$i]["date"]));?> </p>
                         </div>
                         <div class="post_comment_main">
-                          <p><?echo h($comments[$i]["content"]);?></p>
+                          <p><?echo wordwrap(nl2br(h($comments[$i]["content"])), 36, "\n", true);?></p>
                         </div>
                       </div>
                       <?php if (
@@ -244,7 +246,7 @@ if ($result["cnt"] > 0) {
                         <input
                             type="hidden"
                             name="commentid"
-                            value="<?echo $comments[$i]["commentid"]?>"
+                            value="<?echo h($comments[$i]["commentid"]);?>"
                         />
                         <input type="hidden" name="type" value="comment">
                       </form>

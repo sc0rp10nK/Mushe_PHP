@@ -31,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
   <?php
   $title = h($profile_user["name"]) . "(@" . h($profile_user["userid"]) . ")";
   define("title", $title);
+  define("path", "/profile");
   include "../global_menu.php";
   ?>
   <body>
@@ -40,11 +41,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
           <img src="/actions/image.php?id=<?echo h($profile_user['userid']);?>" id="user_profile_icon" />
         </div>
         <div class="user_profile_name_block">
-        <a id="user_profile_follows_num" data-toggle="modal" data-target="#followModal" ><?echo getFollowNum($db,$profile_user['userid'])?>フォロー</a>
+        <a id="user_profile_follows_num" data-toggle="modal" data-target="#followModal" ><?echo h(getFollowNum($db,$profile_user['userid']));?>フォロー</a>
           <p name="user_profile_name" id="user_profile_name">
             <?echo h($profile_user['name']);?>
           </p>
-          <a id="user_profile_followers_num" data-toggle="modal" data-target="#followerModal" ><?echo getFollowerNum($db,$profile_user['userid'])?>フォロワー</a>
+          <a id="user_profile_followers_num" data-toggle="modal" data-target="#followerModal" ><?echo h(getFollowerNum($db,$profile_user['userid']));?>フォロワー</a>
           <p name="user_profile_id" id="user_profile_id">
           @<?echo h($profile_user['userid']);?>
           </p>        </div>
@@ -59,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
               name="token"
               value="<?= h(generate_token()) ?>"
               />
-              <input type="hidden" name="followid" value=<?echo $profile_user['userid']?>>
+              <input type="hidden" name="followid" value=<?echo h($profile_user['userid']);?>>
               <?php if (
                   isFollowed(
                       $db,
@@ -101,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         <input
                type="hidden"
                name="postid"
-               value="<?echo $posts[$i]['postid']?>"
+               value="<?echo h($posts[$i]['postid']);?>"
                />
       </form>
       <?php endif; ?>
@@ -155,16 +156,17 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         <?php endif; ?>
       </div>
       <div class="posts_body">
-        <p>
-          <?echo nl2br($posts[$i]['content']);?>
-        </p>
+        <p><?echo wordwrap(nl2br(h($posts[$i]["content"])), 36, "\n", true);?></p>
       </div>
       <div class="posts_footer">
+        <?php if (isset($posts[$i]["music_id"])): ?>
+                      <p class="posts_spotify_required">Spotify user only</p>
+        <?php endif; ?>
         <p class="posts_date">
-          <?php echo convert_to_fuzzy_time($posts[$i]["date"]); ?>
+          <?php echo h(convert_to_fuzzy_time($posts[$i]["date"])); ?>
         </p>
       </div>
-      <a class ="link" href="/p?id=<?echo $posts[$i]['postid']?>">
+      <a class ="link" href="/p?id=<?echo h($posts[$i]['postid']);?>">
       </a>
     </div>
     <?php endfor; ?>
@@ -206,13 +208,13 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
           <div class="modal-body">
           <?php for ($i = 0; $i < count($follows); ++$i): ?>
               <div class="follow_user_box">
-                <a class ="profile_link" href="/profile/?id=<?echo $follows[$i]["userid"]?>">
+                <a class ="profile_link" href="/<?echo h($follows[$i]["userid"]);?>">
                   <div class="follow_user_icon_block">
                     <img src="/actions/image.php?id=<?echo h($follows[$i]['userid']);?>" id="follow_user_icon" />
                   </div>
                 </a>
                   <div class="follow_user_name_block">
-                  <a class ="profile_link" href="/profile/?id=<?echo $follows[$i]["userid"]?>">
+                  <a class ="profile_link" href="/<?echo h($follows[$i]["userid"]);?>">
                     <p name="follow_user_name" id="follow_user_name">
                       <?echo h($follows[$i]['name']);?>
                     </p>
@@ -230,7 +232,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                         name="token"
                         value="<?= h(generate_token()) ?>"
                         />
-                        <input type="hidden" name="followid" value=<?echo $follows[$i]['userid']?>>
+                        <input type="hidden" name="followid" value=<?echo h($follows[$i]['userid']);?>>
                         <?php if (
                             isFollowed(
                                 $db,
@@ -274,13 +276,13 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
           <div class="modal-body">
           <?php for ($i = 0; $i < count($followers); ++$i): ?>
             <div class="follower_user_box">
-                <a class ="profile_link" href="/profile/?id=<?echo $followers[$i]["userid"]?>">
+                <a class ="profile_link" href="/<?echo h($followers[$i]["userid"]);?>">
                     <div class="follower_user_icon_block">
                       <img src="/actions/image.php?id=<?echo h($followers[$i]['userid']);?>" id="follower_user_icon" />
                     </div>
                 </a>
                 <div class="follower_user_name_block">
-                  <a class ="profile_link" href="/profile/?id=<?echo $followers[$i]["userid"]?>">
+                  <a class ="profile_link" href="/<?echo $followers[$i]["userid"]?>">
                     <p name="follower_user_name" id="follower_user_name">
                       <?echo h($followers[$i]['name']);?>
                     </p>
@@ -298,7 +300,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                         name="token"
                         value="<?= h(generate_token()) ?>"
                         />
-                        <input type="hidden" name="followid" value=<?echo $followers[$i]['userid']?>>
+                        <input type="hidden" name="followid" value=<?echo h($followers[$i]['userid']);?>>
                         <?php if (
                             isFollowed(
                                 $db,

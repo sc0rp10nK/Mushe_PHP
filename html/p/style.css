@@ -410,6 +410,7 @@ p {
   .content .main_box .footer .post_text_box {
     width: 450px;
     margin: auto;
+    margin-top: 20px;
   }
   .content .post_comment_main {
     height: auto;

@@ -1,33 +1,37 @@
 <?php
-require_once '../../api/function.php';
+require_once "../../api/function.php";
 
 require_unlogined_session();
 
 // POSTメソッドのときのみ実行
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (
-        isset($_POST['userid']) &&
-        isset($_POST['password']) &&
-        isset($_POST['name'])
+        isset($_POST["userid"]) &&
+        isset($_POST["password"]) &&
+        isset($_POST["name"])
     ) {
         try {
+            $id_reg_str = "/^[A-Za-z0-9][A-Za-z0-9-_]{3,15}$/i";
+            if (!preg_match($id_reg_str, h($_POST["userid"]))) {
+                throw new Exception("登録失敗しました");
+            }
             $pass_reg_str = "/^(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,50}$/i";
-            if(!preg_match($pass_reg_str,h($_POST['password']))){
-                throw new Exception('登録失敗しました');
+            if (!preg_match($pass_reg_str, h($_POST["password"]))) {
+                throw new Exception("登録失敗しました");
             }
             $db = getDb();
-            $userid = h($_POST['userid']);
-            $pass = h($_POST['password']);
-            $name = h($_POST['name']);
+            $userid = h($_POST["userid"]);
+            $pass = h($_POST["password"]);
+            $name = h($_POST["name"]);
             $sql =
-                'INSERT INTO USERS (userid, pwHash, name) VALUES (:userid, :pwHash, :name)';
+                "INSERT INTO USERS (userid, pwHash, name) VALUES (:userid, :pwHash, :name)";
             $prepare = $db->prepare($sql);
-            $prepare->bindValue(':userid', $userid, PDO::PARAM_STR);
+            $prepare->bindValue(":userid", $userid, PDO::PARAM_STR);
             $prepare->bindValue(
-                ':pwHash',
+                ":pwHash",
                 password_hash($pass, PASSWORD_DEFAULT)
             );
-            $prepare->bindValue(':name', $name);
+            $prepare->bindValue(":name", $name);
 
             $prepare->execute();
             $name = basename("img.png");
@@ -38,22 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $db->prepare($sql);
             $stmt->bindValue(":image_name", $name, PDO::PARAM_STR);
             $stmt->bindValue(":image_type", $type, PDO::PARAM_STR);
-            $stmt->bindValue(
-                ":image_content",
-                $content,
-                PDO::PARAM_STR
-            );
-            $stmt->bindValue(
-                ":image_userid",
-                $userid,
-                PDO::PARAM_STR
-            );
+            $stmt->bindValue(":image_content", $content, PDO::PARAM_STR);
+            $stmt->bindValue(":image_userid", $userid, PDO::PARAM_STR);
             $stmt->execute();
-            header('Location: /account/login');
+            header("Location: /account/login");
         } catch (PDOException $e) {
             print $e;
-            $errmsg = 'アカウントが既に存在がします';
-        } catch(Exception $e){
+            $errmsg = "アカウントが既に存在がします";
+        } catch (Exception $e) {
             $errmsg = $e->getMessage();
         }
     }
@@ -62,8 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="ja">
   <?php
-  define('title', 'ログイン・Mushe');
-  include '../../global_menu.php';
+  define("title", "ログイン・Mushe");
+  define("path", "/account/sign-up");
+  include "../../global_menu.php";
   ?>
 <body>
 <div class="login-form">
@@ -71,7 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h2 class="text-center">アカウント作成</h2>
 		<? echo "<p class='errmsg'>{$errmsg}</p>" ?>
         <div class="form-group has-error">
-        	<input type="text" maxlength="15" class="form-control" name="userid" placeholder="ユーザID" required="required">
+            <div class="input-wrap-userid">
+        	    <input type="text" maxlength="15" id="userid" class="form-control" name="userid" placeholder="ユーザID" required="required">
+            </div>
         </div>
 		<div class="form-group">
             <div class="input-wrap">
@@ -96,6 +95,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 </body>
 <script>
+    //ID用
+        //パスワードチェック
+        $('#userid').keyup(function() {
+        var regexError;
+        if(!$(this).val().match(/^[A-Za-z0-9][A-Za-z0-9-_]{3,15}$/i)){
+            $(this).css("background-color", "#FEF4F8");
+            regexError = true;
+        }else{
+            $(this).css("background-color", "#f2f2f2");
+        }
+        if(regexError){ //正規表現と一致しない場合
+            // エラーが見つかった場合
+            if( !$(".input-wrap-userid").next('span.error').length ) { // この要素の後続要素が存在しない場合
+                $(".input-wrap-userid").after('<span class="error" style="color:red; font-size:13px;">先頭の文字は英数字のみです。<br>英数字またはアンダースコアまたはハイフンで<br>4文字以上15文字以下で入力してください</span>')
+            }
+            $("#regiBtn").prop("disabled", true);
+        }else {
+            // エラーがなかった場合
+            $(".input-wrap-userid").next('span.error').remove(); // エラーメッセージを削除
+        }
+    });
     //パスワード用
     //パスワードの表示非表示
     $(function() {
