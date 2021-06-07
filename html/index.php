@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             $posts = $sth->fetchAll(PDO::FETCH_ASSOC);
         } else {
             $sql =
-                "SELECT post_userid,name, content,date,userid,music_id FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL AND userid = :userid ORDER BY date DESC;";
+                "SELECT postid,post_userid,name, content,date,userid,music_id FROM POSTS JOIN USERS ON POSTS.post_userid = USERS.userid WHERE date IS NOT NULL AND userid = :userid ORDER BY date DESC;";
             $sth = $db->prepare($sql);
             $sth->bindParam(":userid", $username);
             $sth->execute();
@@ -88,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                     $session = new SpotifyWebAPI\Session(
                         $_ENV["ClientID"],
                         $_ENV["ClientSecret"],
-                        "http://localhost:8080/actions/callback.php"
+                        "http://localhost/actions/callback.php"
                     );
                     $session->refreshAccessToken($_SESSION["refresh"]);
                     $_SESSION["access"] = $session->getAccessToken();
@@ -178,13 +178,14 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
           $_SESSION["username"] != "GUEST" &&
           $posts[$i]["userid"] == $_SESSION["username"]
       ): ?>
-      <form id="delete" action="actions/delete.php" method="post">
+      <form id="delete" action="/actions/delete.php" method="post">
         <a id="post_delete" data-toggle="modal" data-target="#exampleModal" ><i class="fa fa-times" aria-hidden="true"></i></a>
         <input
             type="hidden"
             name="postid"
             value="<?echo h($posts[$i]["postid"])?>"
         />
+        <input type="hidden" name="type" value="post">
       </form>
       <?php endif; ?>
           <div class="post_user_box">

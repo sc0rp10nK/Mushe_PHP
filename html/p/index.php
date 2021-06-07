@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                     $session = new SpotifyWebAPI\Session(
                         $_ENV["ClientID"],
                         $_ENV["ClientSecret"],
-                        "http://localhost:8080/actions/callback.php"
+                        "http://localhost/actions/callback.php"
                     );
                     $session->refreshAccessToken($_SESSION["refresh"]);
                     $_SESSION["access"] = $session->getAccessToken();

@@ -53,6 +53,7 @@ include "../global_menu.php";
                         name="postid"
                         value="<?echo $resultPosts[$i]['postid']?>"
                         />
+                        <input type="hidden" name="type" value="post">
                 </form>
                 <?php endif; ?>
                 <div class="post_user_box">

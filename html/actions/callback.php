@@ -6,7 +6,7 @@ $dotenv->load();
 $session = new SpotifyWebAPI\Session(
     $_ENV["ClientID"],
     $_ENV["ClientSecret"],
-    "http://localhost:8080/actions/callback.php"
+    "http://localhost/actions/callback.php"
 );
 $api = new SpotifyWebAPI\SpotifyWebAPI([
     "auto_refresh" => true,
