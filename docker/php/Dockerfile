@@ -3,8 +3,10 @@ RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/
 RUN apt-get update \
     && apt-get install -y zlib1g-dev \
     && apt-get install -y libzip-dev \
-    && apt-get install -y unzip
+    && apt-get install -y unzip \
+    && apt-get install -y vim
 RUN docker-php-ext-install pdo_mysql zip
+RUN  a2enmod rewrite
 ENV COMPOSER_HOME /composer
 ENV PATH $PATH:/composer/vendor/bin
 RUN composer require jwilsson/spotify-web-api-php

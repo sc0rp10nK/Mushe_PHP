@@ -2,3 +2,4 @@ docker/mysql/*
 docker/phpmyadmin/*
 php.ini
 .env
+er.drawio
